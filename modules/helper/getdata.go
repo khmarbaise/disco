@@ -9,6 +9,7 @@ import (
 	"os"
 )
 
+//GetData Will get on the given URL and convert the JSON into the given datastructure.
 func GetData(checkURL string, v interface{}) {
 	response, err := http.Get(checkURL)
 	if err != nil {
