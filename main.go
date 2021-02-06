@@ -27,9 +27,10 @@ func main() {
 	app.Version = Version + formatBuiltWith(Tags)
 	app.EnableBashCompletion = true
 	app.Commands = []*cli.Command{
-		&cmd.Distribution,
-		&cmd.MajorVersion,
+		&cmd.Distributions,
+		&cmd.MajorVersions,
 		&cmd.Packages,
+		&cmd.EphemeralIds,
 	}
 	app.EnableBashCompletion = true
 	err := app.Run(os.Args)

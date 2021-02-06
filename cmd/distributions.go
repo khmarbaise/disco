@@ -10,13 +10,13 @@ import (
 	"os"
 )
 
-//Distribution Uses information from foojay JDK Discovery API.
-var Distribution = cli.Command{
-	Name:        "distribution",
+//Distributions Uses information from foojay JDK Discovery API.
+var Distributions = cli.Command{
+	Name:        "distributions",
 	Aliases:     []string{"dist", "di"},
 	Usage:       "Will use the '../distributions' end point of the Foojay Discovery API",
 	Description: "dist description",
-	Action:      distribution,
+	Action:      actionDistributions,
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:  "name",
@@ -53,7 +53,7 @@ type options struct {
 }
 
 //distribution Analysis the command line options and creates the appropriate URL from it.
-func distribution(ctx *cli.Context) error {
+func actionDistributions(ctx *cli.Context) error {
 	var checkURL = url
 
 	if ctx.IsSet("name") {
