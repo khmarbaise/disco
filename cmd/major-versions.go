@@ -24,7 +24,7 @@ type majorVersionsStruct []struct {
 }
 
 func majorVersions(ctx *cli.Context) error {
-	var url = fmt.Sprintf("%s/major_versions", foojayBaseAPI)
+	var url = fmt.Sprintf("%s/major_versions", FoojayBaseAPI)
 
 	fmt.Printf("URL: %s\n", url)
 
@@ -36,7 +36,6 @@ func majorVersions(ctx *cli.Context) error {
 		fmt.Printf("Major Version: %d\n", majorVersion.MajorVersion)
 		fmt.Printf("Maintained: %v\n", majorVersion.Maintained)
 		fmt.Printf("Term of Support: %v\n", majorVersion.TermOfSupport)
-
 	}
 
 	return nil

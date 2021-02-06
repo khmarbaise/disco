@@ -48,7 +48,7 @@ type options struct {
 
 //distribution Analysis the command line options and creates the appropriate URL from it.
 func actionDistributions(ctx *cli.Context) error {
-	var checkURL = fmt.Sprintf("%s/distributions", foojayBaseAPI)
+	var checkURL = fmt.Sprintf("%s/distributions", FoojayBaseAPI)
 
 	if ctx.IsSet("name") {
 		checkURL = fmt.Sprintf("%s/%s", checkURL, ctx.String("name"))

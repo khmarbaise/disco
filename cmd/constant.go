@@ -1,4 +1,4 @@
 package cmd
 
-//foojayBaseAPI Base API for Foojay V1.0
-const foojayBaseAPI = "https://api.foojay.io/disco/v1.0"
+//FoojayBaseAPI Base API for Foojay V1.0
+const FoojayBaseAPI = "https://api.foojay.io/disco/v1.0"
