@@ -1,6 +1,7 @@
-# DISCO API Scripts
+# Tool uses foojay jdk discovery API
 
 [![Build Status](https://cloud.drone.io/api/badges/khmarbaise/disco/status.svg)](https://cloud.drone.io/khmarbaise/disco)
+
 
 # Status
 
@@ -13,7 +14,7 @@ The current state of development is `Prototype`.
 
 ## Basic Idea
 
-Usage of the Foojay DISCO API
+Use the Foojay JDK Discovery API
 
 ## TODO
 
