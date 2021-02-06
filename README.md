@@ -1,4 +1,4 @@
-# Tool uses foojay jdk discovery API
+# Tool uses foojay jdk DiscoAPI
 
 [![Build Status](https://cloud.drone.io/api/badges/khmarbaise/disco/status.svg)](https://cloud.drone.io/khmarbaise/disco)
 
