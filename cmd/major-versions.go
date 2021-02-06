@@ -75,7 +75,6 @@ func majorVersions(ctx *cli.Context) error {
 func fromBoolToYesNo(value bool) string {
 	if value {
 		return "Yes"
-	} else {
-		return "No"
 	}
+	return "No"
 }
