@@ -10,21 +10,21 @@ import (
 	"os"
 )
 
-//Distribution Uses information from foojay DISCO API.
+//Distribution Uses information from foojay JDK Discovery API.
 var Distribution = cli.Command{
 	Name:        "distribution",
-	Aliases:     []string{"dist"},
+	Aliases:     []string{"dist", "di"},
 	Usage:       "usage on dist",
 	Description: "dist description",
 	Action:      distribution,
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:  "name",
-			Usage: "giving the distribution name.",
+			Usage: "Define the distribution name for example 'zulu', 'oracle'.",
 		},
 		&cli.StringFlag{
 			Name:  "version",
-			Usage: "giving specific version.",
+			Usage: "Returns a list of distributions that support the given version.",
 		},
 	},
 }
@@ -62,11 +62,16 @@ func distribution(ctx *cli.Context) error {
 	return nil
 }
 
-func distributions(checkURL string) error {
+func getData(checkURL string, v interface{}) {
 	response, err := http.Get(checkURL)
 	if err != nil {
 		fmt.Print(err.Error())
 		os.Exit(1)
+	}
+
+	if response.StatusCode != http.StatusOK {
+		fmt.Printf("%s\n", response.Status)
+		os.Exit(2)
 	}
 
 	responseData, err := ioutil.ReadAll(response.Body)
@@ -74,8 +79,13 @@ func distributions(checkURL string) error {
 		log.Fatal(err)
 	}
 
+	json.Unmarshal(responseData, &v)
+}
+
+func distributions(checkURL string) error {
+
 	var responseObject DistributionsStructure
-	json.Unmarshal(responseData, &responseObject)
+	getData(checkURL, &responseObject)
 
 	for i := 0; i < len(responseObject); i++ {
 		distribution := responseObject[i]
@@ -91,19 +101,8 @@ func distributions(checkURL string) error {
 }
 
 func distributionsName(checkURL string) error {
-	response, err := http.Get(checkURL)
-	if err != nil {
-		fmt.Print(err.Error())
-		os.Exit(1)
-	}
-
-	responseData, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	var responseObject DistributionStructure
-	json.Unmarshal(responseData, &responseObject)
+	getData(checkURL, &responseObject)
 
 	fmt.Printf("Name: %s\n", responseObject.Name)
 	fmt.Printf("API Parameter: %s\n", responseObject.APIParameter)
@@ -114,20 +113,10 @@ func distributionsName(checkURL string) error {
 	}
 	return nil
 }
+
 func distributionsVersions(checkURL string) error {
-	response, err := http.Get(checkURL)
-	if err != nil {
-		fmt.Print(err.Error())
-		os.Exit(1)
-	}
-
-	responseData, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	var responseObject DistributionsStructure
-	json.Unmarshal(responseData, &responseObject)
+	getData(checkURL, &responseObject)
 
 	for i := 0; i < len(responseObject); i++ {
 		distribution := responseObject[i]
