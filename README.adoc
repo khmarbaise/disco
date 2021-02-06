@@ -6,6 +6,7 @@
 
 The current state of development is `Prototype`.
 
+ * distributions part have begun.
 
 # Overview
 
