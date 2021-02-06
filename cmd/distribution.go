@@ -39,31 +39,31 @@ type DistributionStructure struct {
 }
 
 //DistributionsStructure describes the structures under "../distributions" location.
-type DistributionsStructure[] struct {
+type DistributionsStructure []struct {
 	DistributionStructure
 }
 
 func distribution(ctx *cli.Context) error {
-	var checkUrl = url
+	var checkURL = url
 
 	if ctx.IsSet("name") {
-		checkUrl = fmt.Sprintf("%s/%s", url, ctx.String("name"))
-		fmt.Printf("URL: %s\n", checkUrl)
-		distributionsName(checkUrl)
+		checkURL = fmt.Sprintf("%s/%s", url, ctx.String("name"))
+		fmt.Printf("URL: %s\n", checkURL)
+		distributionsName(checkURL)
 	} else if ctx.IsSet("version") {
-		checkUrl = fmt.Sprintf("%s/versions/%s", url, ctx.String("version"))
-		fmt.Printf("URL: %s\n", checkUrl)
-		distributionsVersions(checkUrl)
+		checkURL = fmt.Sprintf("%s/versions/%s", url, ctx.String("version"))
+		fmt.Printf("URL: %s\n", checkURL)
+		distributionsVersions(checkURL)
 	} else {
-		fmt.Printf("URL: %s\n", checkUrl)
-		distributions(checkUrl)
+		fmt.Printf("URL: %s\n", checkURL)
+		distributions(checkURL)
 	}
 
 	return nil
 }
 
-func distributions(checkUrl string) error {
-	response, err := http.Get(checkUrl)
+func distributions(checkURL string) error {
+	response, err := http.Get(checkURL)
 	if err != nil {
 		fmt.Print(err.Error())
 		os.Exit(1)
@@ -90,8 +90,8 @@ func distributions(checkUrl string) error {
 	return nil
 }
 
-func distributionsName(checkUrl string) error {
-	response, err := http.Get(checkUrl)
+func distributionsName(checkURL string) error {
+	response, err := http.Get(checkURL)
 	if err != nil {
 		fmt.Print(err.Error())
 		os.Exit(1)
@@ -114,8 +114,8 @@ func distributionsName(checkUrl string) error {
 	}
 	return nil
 }
-func distributionsVersions(checkUrl string) error {
-	response, err := http.Get(checkUrl)
+func distributionsVersions(checkURL string) error {
+	response, err := http.Get(checkURL)
 	if err != nil {
 		fmt.Print(err.Error())
 		os.Exit(1)
