@@ -34,7 +34,7 @@ const url = "https://api.foojay.io/disco/v1.0/distributions"
 //DistributionStructure describes the structures under "../distributions/NAME" location.
 type DistributionStructure struct {
 	Name         string   `json:"name"`
-	ApiParameter string   `json:"api_parameter"`
+	APIParameter string   `json:"api_parameter"`
 	Versions     []string `json:"versions"`
 }
 
@@ -80,7 +80,7 @@ func distributions(checkURL string) error {
 	for i := 0; i < len(responseObject); i++ {
 		distribution := responseObject[i]
 		fmt.Printf("Name: %s\n", distribution.Name)
-		fmt.Printf("API Parameter: %s\n", distribution.ApiParameter)
+		fmt.Printf("API Parameter: %s\n", distribution.APIParameter)
 		fmt.Printf("Number of versions: %d\n", len(distribution.Versions))
 		for i := 0; i < len(distribution.Versions); i++ {
 			fmt.Println(distribution.Versions[i])
@@ -106,7 +106,7 @@ func distributionsName(checkURL string) error {
 	json.Unmarshal(responseData, &responseObject)
 
 	fmt.Printf("Name: %s\n", responseObject.Name)
-	fmt.Printf("API Parameter: %s\n", responseObject.ApiParameter)
+	fmt.Printf("API Parameter: %s\n", responseObject.APIParameter)
 	fmt.Printf("Number of versions: %d\n", len(responseObject.Versions))
 
 	for i := 0; i < len(responseObject.Versions); i++ {
@@ -132,7 +132,7 @@ func distributionsVersions(checkURL string) error {
 	for i := 0; i < len(responseObject); i++ {
 		distribution := responseObject[i]
 		fmt.Printf("Name: %s\n", distribution.Name)
-		fmt.Printf("API Parameter: %s\n", distribution.ApiParameter)
+		fmt.Printf("API Parameter: %s\n", distribution.APIParameter)
 		fmt.Printf("Number of versions: %d\n", len(distribution.Versions))
 		for i := 0; i < len(distribution.Versions); i++ {
 			fmt.Println(distribution.Versions[i])
