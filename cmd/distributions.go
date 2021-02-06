@@ -29,16 +29,16 @@ var Distributions = cli.Command{
 	},
 }
 
-//DistributionStructure describes the structures under "../distributions/NAME" location.
-type DistributionStructure struct {
+//distributionStructure describes the structures under "../distributions/NAME" location.
+type distributionStructure struct {
 	Name         string   `json:"name"`
 	APIParameter string   `json:"api_parameter"`
 	Versions     []string `json:"versions"`
 }
 
-//DistributionsStructure describes the structures under "../distributions" location.
-type DistributionsStructure []struct {
-	DistributionStructure
+//distributionsStructure describes the structures under "../distributions" location.
+type distributionsStructure []struct {
+	distributionStructure
 }
 
 type options struct {
@@ -68,7 +68,7 @@ func actionDistributions(ctx *cli.Context) error {
 
 func distributions(checkURL string, verbose bool) error {
 
-	var distributionsStructure DistributionsStructure
+	var distributionsStructure distributionsStructure
 	helper.GetData(checkURL, &distributionsStructure)
 
 	for i := 0; i < len(distributionsStructure); i++ {
@@ -85,7 +85,7 @@ func distributions(checkURL string, verbose bool) error {
 }
 
 func distributionsName(option options) error {
-	var distributionStructure DistributionStructure
+	var distributionStructure distributionStructure
 	helper.GetData(option.url, &distributionStructure)
 
 	fmt.Printf("Name: %s\n", distributionStructure.Name)
@@ -101,7 +101,7 @@ func distributionsName(option options) error {
 }
 
 func distributionsVersions(checkURL string, verbose bool) error {
-	var distributionsStructure DistributionsStructure
+	var distributionsStructure distributionsStructure
 	helper.GetData(checkURL, &distributionsStructure)
 
 	for i := 0; i < len(distributionsStructure); i++ {

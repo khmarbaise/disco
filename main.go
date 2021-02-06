@@ -22,7 +22,7 @@ var Tags = ""
 func main() {
 	app := cli.NewApp()
 	app.Name = "disco"
-	app.Usage = "Command line tool to explore Foojay Discovery API"
+	app.Usage = "Command line tool to explore the Foojay Discovery API"
 	app.Description = "disco. ..."
 	app.Version = Version + formatBuiltWith(Tags)
 	app.EnableBashCompletion = true

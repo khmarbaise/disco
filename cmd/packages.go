@@ -19,6 +19,13 @@ var Packages = cli.Command{
 			Usage:    "for example 1.8.0_265 or 11 or 13.0.5.1",
 			Required: true,
 		},
+		// "from_version" The packages where the version is larger than from_version (e.g. 11.0.1)
+		// "to_version" The packages where the version is smaller than to_version (e.g. 11.0.5)
+		&cli.StringFlag{
+			Name:    "version_by_definition",
+			Aliases: []string{"vbd"},
+			Usage:   "The version will be calculated from the given parameter (latest, latest_sts, latest_mts, latest_lts)",
+		},
 		&cli.StringFlag{
 			Name:    "name",
 			Aliases: []string{"n"},
@@ -57,12 +64,12 @@ var Packages = cli.Command{
 		&cli.StringFlag{
 			Name:    "release_status",
 			Aliases: []string{"rs"},
-			Usage:   "Release status for example 'ea', 'ga'.",
+			Usage:   "The release status early access or general availability ('ea', 'ga').",
 		},
 		&cli.StringFlag{
 			Name:    "term_of_support",
 			Aliases: []string{"tos"},
-			Usage:   "Term of support for example 'sts', 'mts', 'lts'.",
+			Usage:   "Term of support for example 'sts' (short term support), 'mts' (mid term support), 'lts' (long term stable).",
 		},
 		&cli.StringFlag{
 			Name:    "bitness",
@@ -90,6 +97,27 @@ var Packages = cli.Command{
 			Usage: "Printout all versions.",
 		},
 	},
+}
+
+//PackagesStructure Defines structure for REST API /packages.
+type PackagesStructure []struct {
+	ID                   string `json:"id"`
+	ArchiveType          string `json:"archive_type"`
+	Distribution         string `json:"distribution"`
+	MajorVersion         int    `json:"major_version"`
+	JavaVersion          string `json:"java_version"`
+	DistributionVersion  string `json:"distribution_version"`
+	LatestBuildAvailable bool   `json:"latest_build_available"`
+	ReleaseStatus        string `json:"release_status"`
+	TermOfSupport        string `json:"term_of_support"`
+	OperatingSystem      string `json:"operating_system"`
+	LibCType             string `json:"lib_c_type"`
+	Architecture         string `json:"architecture"`
+	PackageType          string `json:"package_type"`
+	JavafxBundled        bool   `json:"javafx_bundled"`
+	DirectlyDownloadable bool   `json:"directly_downloadable"`
+	Filename             string `json:"filename"`
+	EphemeralID          string `json:"ephemeral_id"`
 }
 
 func packages(ctx *cli.Context) error {

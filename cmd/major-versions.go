@@ -15,8 +15,8 @@ var MajorVersions = cli.Command{
 	Action:      majorVersions,
 }
 
-//MajorVersionsStruct defines the structure which is replied for /major_versions from REST.
-type MajorVersionsStruct []struct {
+//majorVersionsStruct defines the structure which is replied for /major_versions from REST.
+type majorVersionsStruct []struct {
 	MajorVersion  int      `json:"major_version"`
 	TermOfSupport string   `json:"term_of_support"`
 	Maintained    bool     `json:"maintained"`
@@ -28,7 +28,7 @@ func majorVersions(ctx *cli.Context) error {
 
 	fmt.Printf("URL: %s\n", url)
 
-	var majorVersionsStrcut MajorVersionsStruct
+	var majorVersionsStrcut majorVersionsStruct
 	helper.GetData(url, &majorVersionsStrcut)
 
 	for i := 0; i < len(majorVersionsStrcut); i++ {
