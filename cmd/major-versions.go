@@ -3,7 +3,10 @@ package cmd
 import (
 	"fmt"
 	"github.com/khmarbaise/disco/modules/helper"
+	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli/v2"
+	"os"
+	"strings"
 )
 
 //MajorVersions Describe
@@ -13,8 +16,33 @@ var MajorVersions = cli.Command{
 	Usage:       "majorversions .....",
 	Description: "majorversions ....descritpion",
 	Action:      majorVersions,
+	Flags: []cli.Flag{
+		&cli.StringFlag{
+			Name:    "version",
+			Aliases: []string{"v"},
+			Usage:   "Major Version  e.g. 1, 5, 9, 11, 17",
+		},
+		&cli.BoolFlag{
+			Name:    "maintained",
+			Aliases: []string{"mt"},
+			Usage:   "Maintained or not.",
+		},
+		&cli.BoolFlag{
+			Name:    "early-access",
+			Aliases: []string{"ea"},
+			Usage:   "Early Access.",
+		},
+		&cli.BoolFlag{
+			Name:    "general-availability",
+			Aliases: []string{"ga"},
+			Usage:   "General availability.",
+		},
+	},
 }
 
+/*
+{query} The query to get info about a major version (latest_ea, latest_ga, latest_sts, latest_mts, latest_lts)
+*/
 //majorVersionsStruct defines the structure which is replied for /major_versions from REST.
 type majorVersionsStruct []struct {
 	MajorVersion  int      `json:"major_version"`
@@ -28,15 +56,26 @@ func majorVersions(ctx *cli.Context) error {
 
 	fmt.Printf("URL: %s\n", url)
 
-	var majorVersionsStrcut majorVersionsStruct
-	helper.GetData(url, &majorVersionsStrcut)
+	var majorVersionsStruct majorVersionsStruct
+	helper.GetData(url, &majorVersionsStruct)
 
-	for i := 0; i < len(majorVersionsStrcut); i++ {
-		majorVersion := majorVersionsStrcut[i]
-		fmt.Printf("Major Version: %d\n", majorVersion.MajorVersion)
-		fmt.Printf("Maintained: %v\n", majorVersion.Maintained)
-		fmt.Printf("Term of Support: %v\n", majorVersion.TermOfSupport)
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Major Version", "Maintained", "Term of Support", "Versions"})
+	table.SetAutoWrapText(true)
+	table.SetRowLine(true)
+
+	for _, v := range majorVersionsStruct {
+		row := []string{fmt.Sprintf("%d", v.MajorVersion), fromBoolToYesNo(v.Maintained), v.TermOfSupport, strings.Join(v.Versions, ", ")}
+		table.Append(row)
 	}
-
+	table.Render() // Send output
 	return nil
+}
+
+func fromBoolToYesNo(value bool) string {
+	if value {
+		return "Yes"
+	} else {
+		return "No"
+	}
 }

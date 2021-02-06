@@ -3,7 +3,10 @@ package cmd
 import (
 	"fmt"
 	"github.com/khmarbaise/disco/modules/helper"
+	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli/v2"
+	"os"
+	"strings"
 )
 
 //Distributions Uses information from foojay JDK Discovery API.
@@ -71,15 +74,26 @@ func distributions(checkURL string, verbose bool) error {
 	var distributionsStructure distributionsStructure
 	helper.GetData(checkURL, &distributionsStructure)
 
-	for i := 0; i < len(distributionsStructure); i++ {
-		distribution := distributionsStructure[i]
-		fmt.Printf("Name: %16s (API parameter: %16s) Number of versions: %d\n", distribution.Name, distribution.APIParameter, len(distribution.Versions))
-		if verbose {
-			for version := 0; version < len(distribution.Versions); version++ {
-				fmt.Println(distribution.Versions[version])
-			}
-		}
+	table := tablewriter.NewWriter(os.Stdout)
+	if verbose {
+		table.SetHeader([]string{"Name", "API Parameter", "Versions"})
+	} else {
+		table.SetHeader([]string{"Name", "API Parameter", "Number of Versions"})
 	}
+
+	table.SetAutoWrapText(true)
+	table.SetRowLine(false)
+
+	for _, v := range distributionsStructure {
+		row := []string{}
+		if verbose {
+			row = []string{v.Name, v.APIParameter, strings.Join(v.Versions, ", ")}
+		} else {
+			row = []string{v.Name, v.APIParameter, fmt.Sprintf("%d", len(v.Versions))}
+		}
+		table.Append(row)
+	}
+	table.Render() // Send output
 
 	return nil
 }
@@ -97,6 +111,7 @@ func distributionsName(option options) error {
 			fmt.Println(distributionStructure.Versions[i])
 		}
 	}
+
 	return nil
 }
 
@@ -104,17 +119,26 @@ func distributionsVersions(checkURL string, verbose bool) error {
 	var distributionsStructure distributionsStructure
 	helper.GetData(checkURL, &distributionsStructure)
 
-	for i := 0; i < len(distributionsStructure); i++ {
-		distribution := distributionsStructure[i]
-		fmt.Printf("Name: %s\n", distribution.Name)
-		fmt.Printf("API Parameter: %s\n", distribution.APIParameter)
-		fmt.Printf("Number of versions: %d\n", len(distribution.Versions))
-		if verbose {
-			for version := 0; version < len(distribution.Versions); version++ {
-				fmt.Println(distribution.Versions[version])
-			}
-		}
+	table := tablewriter.NewWriter(os.Stdout)
+	if verbose {
+		table.SetHeader([]string{"Name", "API Parameter", "Versions"})
+	} else {
+		table.SetHeader([]string{"Name", "API Parameter", "Number of Versions"})
 	}
+
+	table.SetAutoWrapText(true)
+	table.SetRowLine(false)
+
+	for _, v := range distributionsStructure {
+		row := []string{}
+		if verbose {
+			row = []string{v.Name, v.APIParameter, strings.Join(v.Versions, ", ")}
+		} else {
+			row = []string{v.Name, v.APIParameter, fmt.Sprintf("%d", len(v.Versions))}
+		}
+		table.Append(row)
+	}
+	table.Render() // Send output
 
 	return nil
 }
