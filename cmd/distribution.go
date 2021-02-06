@@ -14,7 +14,7 @@ import (
 var Distribution = cli.Command{
 	Name:        "distribution",
 	Aliases:     []string{"dist", "di"},
-	Usage:       "usage on dist",
+	Usage:       "Will use the '../distributions' end point of the Foojay Discovery API",
 	Description: "dist description",
 	Action:      distribution,
 	Flags: []cli.Flag{
@@ -43,6 +43,7 @@ type DistributionsStructure []struct {
 	DistributionStructure
 }
 
+//distribution Analysis the command line options and creates the appropriate URL from it.
 func distribution(ctx *cli.Context) error {
 	var checkURL = url
 
@@ -84,11 +85,11 @@ func getData(checkURL string, v interface{}) {
 
 func distributions(checkURL string) error {
 
-	var responseObject DistributionsStructure
-	getData(checkURL, &responseObject)
+	var distributionsStructure DistributionsStructure
+	getData(checkURL, &distributionsStructure)
 
-	for i := 0; i < len(responseObject); i++ {
-		distribution := responseObject[i]
+	for i := 0; i < len(distributionsStructure); i++ {
+		distribution := distributionsStructure[i]
 		fmt.Printf("Name: %s\n", distribution.Name)
 		fmt.Printf("API Parameter: %s\n", distribution.APIParameter)
 		fmt.Printf("Number of versions: %d\n", len(distribution.Versions))
@@ -101,25 +102,25 @@ func distributions(checkURL string) error {
 }
 
 func distributionsName(checkURL string) error {
-	var responseObject DistributionStructure
-	getData(checkURL, &responseObject)
+	var distributionStructure DistributionStructure
+	getData(checkURL, &distributionStructure)
 
-	fmt.Printf("Name: %s\n", responseObject.Name)
-	fmt.Printf("API Parameter: %s\n", responseObject.APIParameter)
-	fmt.Printf("Number of versions: %d\n", len(responseObject.Versions))
+	fmt.Printf("Name: %s\n", distributionStructure.Name)
+	fmt.Printf("API Parameter: %s\n", distributionStructure.APIParameter)
+	fmt.Printf("Number of versions: %d\n", len(distributionStructure.Versions))
 
-	for i := 0; i < len(responseObject.Versions); i++ {
-		fmt.Println(responseObject.Versions[i])
+	for i := 0; i < len(distributionStructure.Versions); i++ {
+		fmt.Println(distributionStructure.Versions[i])
 	}
 	return nil
 }
 
 func distributionsVersions(checkURL string) error {
-	var responseObject DistributionsStructure
-	getData(checkURL, &responseObject)
+	var distributionsStructure DistributionsStructure
+	getData(checkURL, &distributionsStructure)
 
-	for i := 0; i < len(responseObject); i++ {
-		distribution := responseObject[i]
+	for i := 0; i < len(distributionsStructure); i++ {
+		distribution := distributionsStructure[i]
 		fmt.Printf("Name: %s\n", distribution.Name)
 		fmt.Printf("API Parameter: %s\n", distribution.APIParameter)
 		fmt.Printf("Number of versions: %d\n", len(distribution.Versions))
