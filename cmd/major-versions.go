@@ -15,6 +15,7 @@ var MajorVersions = cli.Command{
 	Action:      majorVersions,
 }
 
+//MajorVersionsStruct defines the structure which is replied for /major_versions from REST.
 type MajorVersionsStruct []struct {
 	MajorVersion  int      `json:"major_version"`
 	TermOfSupport string   `json:"term_of_support"`
