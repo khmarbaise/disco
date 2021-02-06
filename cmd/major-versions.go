@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+	"github.com/khmarbaise/disco/modules/helper"
 	"github.com/urfave/cli/v2"
 )
 
@@ -13,8 +15,28 @@ var MajorVersions = cli.Command{
 	Action:      majorVersions,
 }
 
+type MajorVersionsStruct []struct {
+	MajorVersion  int      `json:"major_version"`
+	TermOfSupport string   `json:"term_of_support"`
+	Maintained    bool     `json:"maintained"`
+	Versions      []string `json:"versions"`
+}
+
 func majorVersions(ctx *cli.Context) error {
-	//check.IfError(err)
+	var url = fmt.Sprintf("%s/major_versions", foojayBaseAPI)
+
+	fmt.Printf("URL: %s\n", url)
+
+	var majorVersionsStrcut MajorVersionsStruct
+	helper.GetData(url, &majorVersionsStrcut)
+
+	for i := 0; i < len(majorVersionsStrcut); i++ {
+		majorVersion := majorVersionsStrcut[i]
+		fmt.Printf("Major Version: %d\n", majorVersion.MajorVersion)
+		fmt.Printf("Maintained: %v\n", majorVersion.Maintained)
+		fmt.Printf("Term of Support: %v\n", majorVersion.TermOfSupport)
+
+	}
 
 	return nil
 }

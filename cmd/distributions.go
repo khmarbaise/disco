@@ -1,13 +1,9 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/khmarbaise/disco/modules/helper"
 	"github.com/urfave/cli/v2"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"os"
 )
 
 //Distributions Uses information from foojay JDK Discovery API.
@@ -33,8 +29,6 @@ var Distributions = cli.Command{
 	},
 }
 
-const url = "https://api.foojay.io/disco/v1.0/distributions"
-
 //DistributionStructure describes the structures under "../distributions/NAME" location.
 type DistributionStructure struct {
 	Name         string   `json:"name"`
@@ -54,14 +48,14 @@ type options struct {
 
 //distribution Analysis the command line options and creates the appropriate URL from it.
 func actionDistributions(ctx *cli.Context) error {
-	var checkURL = url
+	var checkURL = fmt.Sprintf("%s/distributions", foojayBaseAPI)
 
 	if ctx.IsSet("name") {
-		checkURL = fmt.Sprintf("%s/%s", url, ctx.String("name"))
+		checkURL = fmt.Sprintf("%s/%s", checkURL, ctx.String("name"))
 		fmt.Printf("URL: %s\n", checkURL)
 		distributionsName(options{checkURL, ctx.Bool("verbose")})
 	} else if ctx.IsSet("version") {
-		checkURL = fmt.Sprintf("%s/versions/%s", url, ctx.String("version"))
+		checkURL = fmt.Sprintf("%s/versions/%s", checkURL, ctx.String("version"))
 		fmt.Printf("URL: %s\n", checkURL)
 		distributionsVersions(checkURL, ctx.Bool("verbose"))
 	} else {
@@ -72,31 +66,10 @@ func actionDistributions(ctx *cli.Context) error {
 	return nil
 }
 
-func getData(checkURL string, v interface{}) {
-	response, err := http.Get(checkURL)
-	if err != nil {
-		fmt.Print(err.Error())
-		os.Exit(1)
-	}
-
-	//Need to think about this.
-	if response.StatusCode != http.StatusOK {
-		fmt.Printf("%s\n", response.Status)
-		os.Exit(2)
-	}
-
-	responseData, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	json.Unmarshal(responseData, &v)
-}
-
 func distributions(checkURL string, verbose bool) error {
 
 	var distributionsStructure DistributionsStructure
-	getData(checkURL, &distributionsStructure)
+	helper.GetData(checkURL, &distributionsStructure)
 
 	for i := 0; i < len(distributionsStructure); i++ {
 		distribution := distributionsStructure[i]
@@ -113,7 +86,7 @@ func distributions(checkURL string, verbose bool) error {
 
 func distributionsName(option options) error {
 	var distributionStructure DistributionStructure
-	getData(option.url, &distributionStructure)
+	helper.GetData(option.url, &distributionStructure)
 
 	fmt.Printf("Name: %s\n", distributionStructure.Name)
 	fmt.Printf("API Parameter: %s\n", distributionStructure.APIParameter)
@@ -129,7 +102,7 @@ func distributionsName(option options) error {
 
 func distributionsVersions(checkURL string, verbose bool) error {
 	var distributionsStructure DistributionsStructure
-	getData(checkURL, &distributionsStructure)
+	helper.GetData(checkURL, &distributionsStructure)
 
 	for i := 0; i < len(distributionsStructure); i++ {
 		distribution := distributionsStructure[i]
