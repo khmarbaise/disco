@@ -1,3 +1,4 @@
+RESULT := disco
 DIST := dist
 IMPORT := code.github.io/khmarbaise/disco
 export GO111MODULE=on
@@ -9,9 +10,9 @@ SHASUM ?= shasum -a 256
 export PATH := $($(GO) env GOPATH)/bin:$(PATH)
 
 ifeq ($(OS), Windows_NT)
-	EXECUTABLE := disco.exe
+	EXECUTABLE := $(RESULT).exe
 else
-	EXECUTABLE := disco
+	EXECUTABLE := $(RESULT)
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Darwin)
 		SED_INPLACE := sed -i ''
@@ -28,17 +29,17 @@ MAKE_VERSION := $(shell make -v | head -n 1)
 
 ifneq ($(DRONE_TAG),)
 	VERSION ?= $(subst v,,$(DRONE_TAG))
-	DISCO_VERSION ?= $(VERSION)
+	APP_VERSION ?= $(VERSION)
 else
 	ifneq ($(DRONE_BRANCH),)
 		VERSION ?= $(subst release/v,,$(DRONE_BRANCH))
 	else
 		VERSION ?= master
 	endif
-	DISCO_VERSION ?= $(shell git describe --tags --always | sed 's/-/+/' | sed 's/^v//')
+	APP_VERSION ?= $(shell git describe --tags --always | sed 's/-/+/' | sed 's/^v//')
 endif
 
-LDFLAGS := -X "main.Version=$(DISCO_VERSION)" -X "main.Tags=$(TAGS)"
+LDFLAGS := -X "main.Version=$(APP_VERSION)" -X "main.Tags=$(TAGS)"
 
 GO_DIRS := cmd modules vendor
 GO_SOURCES := $(wildcard *.go)
@@ -49,9 +50,9 @@ SOURCES ?= $(shell find $(GO_DIRS) -name "*.go" -type f)
 TAGS ?=
 
 ifeq ($(OS), Windows_NT)
-	EXECUTABLE := disco.exe
+	EXECUTABLE := $(RESULT).exe
 else
-	EXECUTABLE := disco
+	EXECUTABLE := $(RESULT)
 endif
 
 # $(call strip-suffix,filename)
@@ -154,7 +155,7 @@ release-os:
 	@hash gox > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		cd /tmp && $(GO) get -u github.com/mitchellh/gox; \
 	fi
-	CGO_ENABLED=0 gox -verbose -cgo=false -tags '$(TAGS)' -ldflags '-s -w $(LDFLAGS)' -osarch='!darwin/386 !darwin/arm64 !darwin/arm' -os="windows linux darwin" -arch="386 amd64 arm arm64" -output="$(DIST)/release/disco-$(VERSION)-{{.OS}}-{{.Arch}}"
+	CGO_ENABLED=0 gox -verbose -cgo=false -tags '$(TAGS)' -ldflags '-s -w $(LDFLAGS)' -osarch='!darwin/386 !darwin/arm64 !darwin/arm' -os="windows linux darwin" -arch="386 amd64 arm arm64" -output="$(DIST)/release/$(RESULT)-$(VERSION)-{{.OS}}-{{.Arch}}"
 
 .PHONY: release-compress
 release-compress:
