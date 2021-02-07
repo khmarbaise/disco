@@ -176,7 +176,7 @@ func fromShortToLatest(value string) (result string, err error) {
 		break
 	default:
 		result = ""
-		err = fmt.Errorf("invalid %s for value given.", value)
+		err = fmt.Errorf("invalid %s for value given", value)
 	}
 	return result, err
 }
