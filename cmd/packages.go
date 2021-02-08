@@ -176,10 +176,10 @@ func packages(ctx *cli.Context) error {
 		query = append(query, fmt.Sprintf("support_term=%s", ctx.String(optionTermOfSupport)))
 	}
 	if ctx.IsSet(optionDirectlyDownloadable) {
-		query = append(query, fmt.Sprintf("directly_downloadable=%s", ctx.IsSet(optionDirectlyDownloadable)))
+		query = append(query, fmt.Sprintf("directly_downloadable=%s", helper.FromBoolToYesNo(ctx.Bool(optionDirectlyDownloadable))))
 	}
 	if ctx.IsSet(optionJavaFXBundled) {
-		query = append(query, fmt.Sprintf("javafx_bundled=%s", ctx.IsSet(optionJavaFXBundled)))
+		query = append(query, fmt.Sprintf("javafx_bundled=%s", helper.FromBoolToYesNo(ctx.IsSet(optionJavaFXBundled))))
 	}
 
 	url = fmt.Sprintf("%s?%s", url, strings.Join(query, "&"))
