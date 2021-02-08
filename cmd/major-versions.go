@@ -162,7 +162,6 @@ func majorVersionQuery(url string) {
 	table.Render()
 }
 
-//fromBoolToYesNo Will convert true => 'Yes' and 'No' otherwise.
 func fromBoolToYesNo(value bool) string {
 	if value {
 		return "Yes"
