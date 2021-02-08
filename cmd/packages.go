@@ -9,6 +9,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+const (
+	optionVersionByDefinition = "version_by_definition"
+)
+
 //Packages ....
 var Packages = cli.Command{
 	Name:        "packages",
@@ -26,7 +30,7 @@ var Packages = cli.Command{
 		// "from_version" The packages where the version is larger than from_version (e.g. 11.0.1)
 		// "to_version" The packages where the version is smaller than to_version (e.g. 11.0.5)
 		&cli.StringFlag{
-			Name:    "version_by_definition",
+			Name:    optionVersionByDefinition,
 			Aliases: []string{"vbd"},
 			Usage:   "The version will be calculated from the given parameter (latest, latest_sts, latest_mts, latest_lts)",
 		},

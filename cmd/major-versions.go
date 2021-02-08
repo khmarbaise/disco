@@ -14,21 +14,13 @@ import (
 	"strings"
 )
 
-const (
-	optionMajorVersion        = "major-version"
-	optionLatest              = "latest"
-	optionMaintained          = "maintained"
-	optionEarlyAccess         = "early-access"
-	optionGeneralAvailability = "general-availability"
-)
-
 //MajorVersions Describe
 var MajorVersions = cli.Command{
 	Name:        "majorversions",
 	Aliases:     []string{"mv"},
 	Usage:       "",
 	Description: "Majorversions will access the endpoint ../majorversions of the disco API.",
-	Action:      majorVersions,
+	Action:      actionMajorVersions,
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:    optionMajorVersion,
@@ -74,23 +66,30 @@ type majorVersionsLatestStruct struct {
 	Versions      []string `json:"versions"`
 }
 
-func majorVersions(ctx *cli.Context) error {
-	var url = fmt.Sprintf("%s/major_versions", FoojayBaseAPI)
+func actionMajorVersions(ctx *cli.Context) error {
+	var url = fmt.Sprintf("%s/major_versions", foojayBaseAPI)
 
 	if ctx.IsSet(optionLatest) {
-
 		latest, err := fromShortToLatest(ctx.String(optionLatest))
 		check.IfError(err)
-		url = fmt.Sprintf("%s/%s", url, latest)
-		fmt.Printf("option: '%s' latest: '%s' URL: '%s'\n", ctx.String(optionLatest), latest, url)
-		majorVersionLatest(url)
+		majorVersionQuery(fmt.Sprintf("%s/%s", url, latest))
 	} else if ctx.IsSet(optionMajorVersion) {
-		majorVersion := ctx.String(optionMajorVersion)
-		url = fmt.Sprintf("%s/%s", url, majorVersion)
+
+		if !(ctx.IsSet(optionEarlyAccess) != ctx.IsSet(optionGeneralAvailability)) {
+			return fmt.Errorf("either --ea or --ga must be given")
+		}
+
+		givenVersion := ctx.String(optionMajorVersion)
+		url = fmt.Sprintf("%s/%s", url, givenVersion)
+		if ctx.IsSet(optionEarlyAccess) {
+			url = fmt.Sprintf("%s/ea", url)
+		}
+		if ctx.IsSet(optionGeneralAvailability) {
+			url = fmt.Sprintf("%s/ga", url)
+		}
 		fmt.Printf("URL: %s\n", url)
-		//DO...
-		fmt.Println("majorVersionMajor()")
-		//majorVersionMajor()
+
+		majorVersionQuery(url)
 	} else if ctx.IsSet(optionMaintained) || ctx.IsSet(optionEarlyAccess) || ctx.IsSet(optionGeneralAvailability) {
 		query := []string{}
 		if ctx.IsSet(optionMaintained) {
@@ -104,12 +103,10 @@ func majorVersions(ctx *cli.Context) error {
 		}
 		url = fmt.Sprintf("%s?%s", url, strings.Join(query, "&"))
 		fmt.Printf("URL: %s\n", url)
-		//majorVersionQuery()
-		fmt.Println("majorVersionQuery()")
+		majorVersionMaintainedEaGa(url)
 	} else {
-		//majorVersions(ctx)
 		fmt.Printf("URL: %s\n", url)
-		fmt.Println("majorVersion()")
+		majorVersion(url)
 
 	}
 
@@ -129,13 +126,26 @@ func majorVersion(url string) {
 		row := []string{fmt.Sprintf("%d", v.MajorVersion), fromBoolToYesNo(v.Maintained), v.TermOfSupport, strings.Join(v.Versions, ", ")}
 		table.Append(row)
 	}
-	table.Render() // Send output
-
+	table.Render()
 }
 
-func majorVersionLatest(url string) {
-	fmt.Println("majorVersionLatest()")
+func majorVersionMaintainedEaGa(url string) {
+	var majorVersionsStruct majorVersionsStruct
+	helper.GetData(url, &majorVersionsStruct)
 
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Major Version", "Maintained", "Term of Support", "Versions"})
+	table.SetAutoWrapText(true)
+	table.SetRowLine(true)
+
+	for _, v := range majorVersionsStruct {
+		row := []string{fmt.Sprintf("%d", v.MajorVersion), fromBoolToYesNo(v.Maintained), v.TermOfSupport, strings.Join(v.Versions, ", ")}
+		table.Append(row)
+	}
+	table.Render()
+}
+
+func majorVersionQuery(url string) {
 	var majorLatest majorVersionsLatestStruct
 	helper.GetData(url, &majorLatest)
 
@@ -152,6 +162,7 @@ func majorVersionLatest(url string) {
 	table.Render()
 }
 
+//fromBoolToYesNo Will convert true => 'Yes' and 'No' otherwise.
 func fromBoolToYesNo(value bool) string {
 	if value {
 		return "Yes"
@@ -176,7 +187,7 @@ func fromShortToLatest(value string) (result string, err error) {
 		break
 	default:
 		result = ""
-		err = fmt.Errorf("invalid %s for value given", value)
+		err = fmt.Errorf("an invalid value '%s' given only one of following is valid: 'ea','ga','sts','mts' or 'lts'", value)
 	}
 	return result, err
 }

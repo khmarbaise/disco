@@ -22,15 +22,15 @@ var Distributions = cli.Command{
 	Action:      actionDistributions,
 	Flags: []cli.Flag{
 		&cli.StringFlag{
-			Name:  "name",
+			Name:  optionName,
 			Usage: "Define the distribution name for example 'zulu', 'oracle'.",
 		},
 		&cli.StringFlag{
-			Name:  "version",
+			Name:  optionVersion,
 			Usage: "Returns a list of distributions that support the given version.",
 		},
 		&cli.BoolFlag{
-			Name:  "verbose",
+			Name:  optionVerbose,
 			Usage: "Printout all versions.",
 		},
 	},
@@ -55,19 +55,19 @@ type options struct {
 
 //distribution Analysis the command line options and creates the appropriate URL from it.
 func actionDistributions(ctx *cli.Context) error {
-	var checkURL = fmt.Sprintf("%s/distributions", FoojayBaseAPI)
+	var checkURL = fmt.Sprintf("%s/distributions", foojayBaseAPI)
 
-	if ctx.IsSet("name") {
+	if ctx.IsSet(optionName) {
 		checkURL = fmt.Sprintf("%s/%s", checkURL, ctx.String("name"))
 		fmt.Printf("URL: %s\n", checkURL)
 		distributionsName(options{checkURL, ctx.Bool("verbose")})
-	} else if ctx.IsSet("version") {
-		checkURL = fmt.Sprintf("%s/versions/%s", checkURL, ctx.String("version"))
+	} else if ctx.IsSet(optionVersion) {
+		checkURL = fmt.Sprintf("%s/versions/%s", checkURL, ctx.String(optionVersion))
 		fmt.Printf("URL: %s\n", checkURL)
-		distributionsVersions(checkURL, ctx.Bool("verbose"))
+		distributionsVersions(checkURL, ctx.Bool(optionVerbose))
 	} else {
 		fmt.Printf("URL: %s\n", checkURL)
-		distributions(checkURL, ctx.Bool("verbose"))
+		distributions(checkURL, ctx.Bool(optionVerbose))
 	}
 
 	return nil

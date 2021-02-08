@@ -4,5 +4,19 @@
 
 package cmd
 
-//FoojayBaseAPI Base API for Foojay V1.0
-const FoojayBaseAPI = "https://api.foojay.io/disco/v1.0"
+const (
+	//foojayBaseAPI Base REST API URI for Foojay V1.0
+	foojayBaseAPI = "https://api.foojay.io/disco/v1.0"
+
+	//Command line options used in the different commands.
+
+	optionName    = "name"
+	optionVersion = "version"
+	optionVerbose = "verbose"
+
+	optionMajorVersion        = "major-version"
+	optionLatest              = "latest"
+	optionMaintained          = "maintained"
+	optionEarlyAccess         = "early-access"
+	optionGeneralAvailability = "general-availability"
+)
