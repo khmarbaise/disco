@@ -123,7 +123,7 @@ func majorVersion(url string) {
 	table.SetRowLine(true)
 
 	for _, v := range majorVersionsStruct {
-		row := []string{fmt.Sprintf("%d", v.MajorVersion), fromBoolToYesNo(v.Maintained), v.TermOfSupport, strings.Join(v.Versions, ", ")}
+		row := []string{fmt.Sprintf("%d", v.MajorVersion), helper.FromBoolToYesNo(v.Maintained), v.TermOfSupport, strings.Join(v.Versions, ", ")}
 		table.Append(row)
 	}
 	table.Render()
@@ -139,7 +139,7 @@ func majorVersionMaintainedEaGa(url string) {
 	table.SetRowLine(true)
 
 	for _, v := range majorVersionsStruct {
-		row := []string{fmt.Sprintf("%d", v.MajorVersion), fromBoolToYesNo(v.Maintained), v.TermOfSupport, strings.Join(v.Versions, ", ")}
+		row := []string{fmt.Sprintf("%d", v.MajorVersion), helper.FromBoolToYesNo(v.Maintained), v.TermOfSupport, strings.Join(v.Versions, ", ")}
 		table.Append(row)
 	}
 	table.Render()
@@ -155,18 +155,11 @@ func majorVersionQuery(url string) {
 	table.SetRowLine(true)
 
 	majorVersion := fmt.Sprintf("%d", majorLatest.MajorVersion)
-	maintained := fromBoolToYesNo(majorLatest.Maintained)
+	maintained := helper.FromBoolToYesNo(majorLatest.Maintained)
 	versions := strings.Join(majorLatest.Versions, ", ")
 	row := []string{majorVersion, maintained, majorLatest.TermOfSupport, versions}
 	table.Append(row)
 	table.Render()
-}
-
-func fromBoolToYesNo(value bool) string {
-	if value {
-		return "Yes"
-	}
-	return "No"
 }
 
 //fromShortToLatest Will convert 'ea', 'ga', 'sts', 'mts', 'lts' into `latest_...`.

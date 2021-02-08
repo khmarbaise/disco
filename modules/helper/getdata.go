@@ -34,3 +34,11 @@ func GetData(checkURL string, v interface{}) {
 
 	json.Unmarshal(responseData, &v)
 }
+
+//FromBoolToYesNo Convert from bool to string.
+func FromBoolToYesNo(value bool) string {
+	if value {
+		return "Yes"
+	}
+	return "No"
+}

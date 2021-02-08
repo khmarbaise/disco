@@ -6,11 +6,26 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/khmarbaise/disco/modules/helper"
+	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli/v2"
+	"os"
+	"strings"
 )
 
 const (
-	optionVersionByDefinition = "version_by_definition"
+	optionVersionByDefinition  = "version_by_definition"
+	optionArchitecture         = "architecture"
+	optionDistribution         = "distribution"
+	optionArchiveType          = "archive_type"
+	optionPackageType          = "package_type"
+	optionOperatingSystem      = "operating_system"
+	optionLibcType             = "libc_type"
+	optionReleaseStatus        = "release_status"
+	optionTermOfSupport        = "term_of_support"
+	optionBitness              = "bitness"
+	optionJavaFXBundled        = "javafx_bundled"
+	optionDirectlyDownloadable = "directly_downloadable"
 )
 
 //Packages ....
@@ -22,7 +37,7 @@ var Packages = cli.Command{
 	Action:      packages,
 	Flags: []cli.Flag{
 		&cli.StringFlag{
-			Name:     "version",
+			Name:     optionVersion,
 			Aliases:  []string{"v"},
 			Usage:    "for example 1.8.0_265 or 11 or 13.0.5.1",
 			Required: true,
@@ -35,63 +50,63 @@ var Packages = cli.Command{
 			Usage:   "The version will be calculated from the given parameter (latest, latest_sts, latest_mts, latest_lts)",
 		},
 		&cli.StringFlag{
-			Name:    "name",
+			Name:    optionName,
 			Aliases: []string{"n"},
 			Usage:   "Define the distribution name for example 'zulu', 'oracle'.",
 		},
 		&cli.StringFlag{
-			Name:    "architecture",
+			Name:    optionArchitecture,
 			Aliases: []string{"arch"},
 			Usage:   "Architecture for example aarch64, arm, arm64, mips, ppc, ppc64, ppc64le, riscv64, s390x, sparc, sparcv9, x64, x86, amd64.",
 		},
 		&cli.StringFlag{
-			Name:    "distribution",
+			Name:    optionDistribution,
 			Aliases: []string{"distro", "dist"},
 			Usage:   "Distribution for example  'aoj', 'aoj_openj9', 'dragonwell', 'corretto', 'liberica', 'oracle_open_jdk', 'redhat', 'sap_machine', 'zulu'.",
 		},
 		&cli.StringFlag{
-			Name:    "archive_type",
+			Name:    optionArchiveType,
 			Aliases: []string{"ext"},
 			Usage:   "File extension e.g. 'cab', 'deb', 'dmg', 'exe', 'msi', 'pkg', 'rpm', 'tar', 'zip'",
 		},
 		&cli.StringFlag{
-			Name:    "package_type",
+			Name:    optionPackageType,
 			Aliases: []string{"pt"},
 			Usage:   "Package type like 'jre', 'jdk'",
 		},
 		&cli.StringFlag{
-			Name:    "operating_system",
+			Name:    optionOperatingSystem,
 			Aliases: []string{"os"},
 			Usage:   "Operating System for example 'windows', 'macos', 'linux'.",
 		},
 		&cli.StringFlag{
-			Name:    "libc_type",
+			Name:    optionLibcType,
 			Aliases: []string{"lt"},
 			Usage:   "Type of libc for example 'glibc', 'libc', 'musl', 'c_std_lib'.",
 		},
 		&cli.StringFlag{
-			Name:    "release_status",
+			Name:    optionReleaseStatus,
 			Aliases: []string{"rs"},
 			Usage:   "The release status early access or general availability ('ea', 'ga').",
 		},
 		&cli.StringFlag{
-			Name:    "term_of_support",
+			Name:    optionTermOfSupport,
 			Aliases: []string{"tos"},
 			Usage:   "Term of support for example 'sts' (short term support), 'mts' (mid term support), 'lts' (long term stable).",
 		},
 		&cli.StringFlag{
-			Name:    "bitness",
+			Name:    optionBitness,
 			Aliases: []string{"b"},
 			Usage:   "Bitness for example '32' or '64' bits.",
 		},
 
 		&cli.BoolFlag{
-			Name:    "javafx_bundled",
+			Name:    optionJavaFXBundled,
 			Aliases: []string{"fx"},
 			Usage:   "With JavaFX",
 		},
 		&cli.BoolFlag{
-			Name:    "directly_downloadable",
+			Name:    optionDirectlyDownloadable,
 			Aliases: []string{"dd"},
 			Usage:   "Directly downloadable.",
 		},
@@ -101,7 +116,7 @@ var Packages = cli.Command{
 			Usage: "Latest for example 'overall', 'per_distro'",
 		},
 		&cli.BoolFlag{
-			Name:  "verbose",
+			Name:  optionVerbose,
 			Usage: "Printout all versions.",
 		},
 	},
@@ -129,7 +144,94 @@ type PackagesStructure []struct {
 }
 
 func packages(ctx *cli.Context) error {
+	var url = fmt.Sprintf("%s/packages", foojayBaseAPI)
+	query := []string{}
 
-	fmt.Println("Not yet implemented.")
+	if ctx.IsSet(optionVersion) {
+		query = append(query, fmt.Sprintf("version=%s", ctx.String(optionVersion)))
+	}
+
+	if ctx.IsSet(optionLibcType) {
+		query = append(query, fmt.Sprintf("libc_type=%s", ctx.String(optionLibcType)))
+	}
+	if ctx.IsSet(optionArchiveType) {
+		query = append(query, fmt.Sprintf("archive_type=%s", ctx.String(optionArchiveType)))
+	}
+	if ctx.IsSet(optionArchitecture) {
+		query = append(query, fmt.Sprintf("architecture=%s", ctx.String(optionArchitecture)))
+	}
+	if ctx.IsSet(optionDistribution) {
+		query = append(query, fmt.Sprintf("distro=%s", ctx.String(optionDistribution)))
+	}
+	if ctx.IsSet(optionBitness) {
+		query = append(query, fmt.Sprintf("bitness=%s", ctx.String(optionBitness)))
+	}
+	if ctx.IsSet(optionPackageType) {
+		query = append(query, fmt.Sprintf("package_type=%s", ctx.String(optionPackageType)))
+	}
+	if ctx.IsSet(optionReleaseStatus) {
+		query = append(query, fmt.Sprintf("release_status=%s", ctx.String(optionReleaseStatus)))
+	}
+	if ctx.IsSet(optionTermOfSupport) {
+		query = append(query, fmt.Sprintf("support_term=%s", ctx.String(optionTermOfSupport)))
+	}
+	if ctx.IsSet(optionDirectlyDownloadable) {
+		query = append(query, fmt.Sprintf("directly_downloadable=%s", ctx.IsSet(optionDirectlyDownloadable)))
+	}
+	if ctx.IsSet(optionJavaFXBundled) {
+		query = append(query, fmt.Sprintf("javafx_bundled=%s", ctx.IsSet(optionJavaFXBundled)))
+	}
+
+	url = fmt.Sprintf("%s?%s", url, strings.Join(query, "&"))
+	fmt.Printf("URL: %s\n", url)
+
+	var packagesStructure = PackagesStructure{}
+	helper.GetData(url, &packagesStructure)
+
+	table := tablewriter.NewWriter(os.Stdout)
+
+	table.SetHeader([]string{"ID",
+		"ArchiveType",
+		"Distro",
+		"Version",
+		"JavaVersion",
+		"DistributionVersion",
+		"Build",
+		"Status",
+		"Support",
+		"OS",
+		"LibCType",
+		"Arch",
+		"PT",
+		"FX",
+		"Downloadable",
+		"Filename",
+		"EphemeralID",
+	})
+	table.SetAutoWrapText(true)
+	table.SetRowLine(true)
+
+	for _, v := range packagesStructure {
+		row := []string{fmt.Sprintf("%s", v.ID),
+			v.ArchiveType,
+			v.Distribution,
+			fmt.Sprintf("%d", v.MajorVersion),
+			v.JavaVersion,
+			v.DistributionVersion,
+			helper.FromBoolToYesNo(v.LatestBuildAvailable),
+			v.ReleaseStatus,
+			v.TermOfSupport,
+			v.OperatingSystem,
+			v.LibCType,
+			v.Architecture,
+			v.PackageType,
+			helper.FromBoolToYesNo(v.JavafxBundled),
+			helper.FromBoolToYesNo(v.DirectlyDownloadable),
+			v.Filename,
+			v.EphemeralID,
+		}
+		table.Append(row)
+	}
+	table.Render()
 	return nil
 }
