@@ -50,11 +50,6 @@ var Packages = cli.Command{
 			Usage:   "The version will be calculated from the given parameter (latest, latest_sts, latest_mts, latest_lts)",
 		},
 		&cli.StringFlag{
-			Name:    optionName,
-			Aliases: []string{"n"},
-			Usage:   "Define the distribution name for example 'zulu', 'oracle'.",
-		},
-		&cli.StringFlag{
 			Name:    optionArchitecture,
 			Aliases: []string{"arch"},
 			Usage:   "Architecture for example aarch64, arm, arm64, mips, ppc, ppc64, ppc64le, riscv64, s390x, sparc, sparcv9, x64, x86, amd64.",
@@ -169,6 +164,9 @@ func packages(ctx *cli.Context) error {
 	if ctx.IsSet(optionPackageType) {
 		query = append(query, fmt.Sprintf("package_type=%s", ctx.String(optionPackageType)))
 	}
+	if ctx.IsSet(optionOperatingSystem) {
+		query = append(query, fmt.Sprintf("operating_system=%s", ctx.String(optionOperatingSystem)))
+	}
 	if ctx.IsSet(optionReleaseStatus) {
 		query = append(query, fmt.Sprintf("release_status=%s", ctx.String(optionReleaseStatus)))
 	}
@@ -190,7 +188,8 @@ func packages(ctx *cli.Context) error {
 
 	table := tablewriter.NewWriter(os.Stdout)
 
-	table.SetHeader([]string{"ID",
+	table.SetHeader([]string{
+		//"ID",
 		"ArchiveType",
 		"Distro",
 		"Version",
@@ -205,14 +204,15 @@ func packages(ctx *cli.Context) error {
 		"PT",
 		"FX",
 		"Downloadable",
-		"Filename",
-		"EphemeralID",
+		//"Filename",
+		//"EphemeralID",
 	})
 	table.SetAutoWrapText(true)
 	table.SetRowLine(true)
 
 	for _, v := range packagesStructure {
-		row := []string{fmt.Sprintf("%s", v.ID),
+		row := []string{
+			//fmt.Sprintf("%s", v.ID),
 			v.ArchiveType,
 			v.Distribution,
 			fmt.Sprintf("%d", v.MajorVersion),
@@ -227,8 +227,8 @@ func packages(ctx *cli.Context) error {
 			v.PackageType,
 			helper.FromBoolToYesNo(v.JavafxBundled),
 			helper.FromBoolToYesNo(v.DirectlyDownloadable),
-			v.Filename,
-			v.EphemeralID,
+			//v.Filename,
+			//v.EphemeralID,
 		}
 		table.Append(row)
 	}
