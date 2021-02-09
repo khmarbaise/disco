@@ -26,6 +26,7 @@ on the console.
 ## TODO
 
 * The output of `packages` has to many columns to fit usefully on the console.
+* Precedence of different options for different commands.
 
 ## Examples
 
