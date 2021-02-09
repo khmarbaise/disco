@@ -12,23 +12,26 @@ This is a Go implementation which consumes information of the
 [foojay Disco API][discoapi]. 
 The basic idea of this project is having a 
 [command line based][discoscripts] implementation which does not 
-need installing any other requirements and works on more or less
-all platforms.
+need supplemental tools to be installed to work. Apart from that
+it should work on more or less all platforms.
 
 The current implementation will consume the information of the 
 API and printout the information to the console.
 
 ## Basic Idea
 
-Use the Foojay JDK Discovery API and print some usefull information
+Use the Foojay JDK Discovery API and print some useful information
 on the console.
 
 ## TODO
 
+* The output of `packages` has to many columns to fit usefully on the console.
+
 ## Examples
 
+### Distributions
 Here is an example for consuming the information of the `distributions`
-REST API end-point.
+REST API end-point. The command is named `distributions` (abbreviated `di`):
 ```
 >./disco di
 URL: https://api.foojay.io/disco/v1.0/distributions
@@ -295,6 +298,7 @@ URL: https://api.foojay.io/disco/v1.0/distributions/versions/7.0.85
 |      |               | 6.0.53, 6.0.49, 6.0.47, 6.0.42 |
 +------+---------------+--------------------------------+
 ```
+### Major Versions
 There is another command `major_versions` (abbreviated: `mv`) which will 
 requests information from the `major_versions` REST end-point which looks
 like this:
@@ -380,6 +384,29 @@ URL: https://api.foojay.io/disco/v1.0/major_versions
 |               |            |                 | 6.0.4, 6.0.3, 6.0.2, 6.0.1     |
 +---------------+------------+-----------------+--------------------------------+
 ````
+
+### Packages
+
+In the following example you see a call to the `packages` command:
+```
+> disco packages --tos sts --fv 11.0.7 --tv 11.0.8 --os linux --rs ga --tos lts --distro zulu --ext tar.gz --arch x86
+```
+
+The output of the above command looks like this:
+```
+URL: https://api.foojay.io/disco/v1.0/packages?from_version=11.0.7&to_version=11.0.8&archive_type=tar.gz&architecture=x86&distro=zulu&operating_system=linux&release_status=ga&support_term=lts
++-------------+--------+---------+-------------+---------------------+-------+--------+---------+-------+----------+------+-----+----+--------------+
+| ARCHIVETYPE | DISTRO | VERSION | JAVAVERSION | DISTRIBUTIONVERSION | BUILD | STATUS | SUPPORT |  OS   | LIBCTYPE | ARCH | PT  | FX | DOWNLOADABLE |
++-------------+--------+---------+-------------+---------------------+-------+--------+---------+-------+----------+------+-----+----+--------------+
+| tar.gz      | zulu   |      11 | 11.0.8      | 11.41.23.0          | No    | ga     | lts     | linux | glibc    | x86  | jdk | No | Yes          |
++-------------+--------+---------+-------------+---------------------+-------+--------+---------+-------+----------+------+-----+----+--------------+
+| tar.gz      | zulu   |      11 | 11.0.8      | 11.41.23.0          | No    | ga     | lts     | linux | glibc    | x86  | jre | No | Yes          |
++-------------+--------+---------+-------------+---------------------+-------+--------+---------+-------+----------+------+-----+----+--------------+
+| tar.gz      | zulu   |      11 | 11.0.7      | 11.39.15.0          | No    | ga     | lts     | linux | glibc    | x86  | jre | No | Yes          |
++-------------+--------+---------+-------------+---------------------+-------+--------+---------+-------+----------+------+-----+----+--------------+
+| tar.gz      | zulu   |      11 | 11.0.7      | 11.39.15.0          | No    | ga     | lts     | linux | glibc    | x86  | jdk | No | Yes          |
++-------------+--------+---------+-------------+---------------------+-------+--------+---------+-------+----------+------+-----+----+--------------+
+```
 
 [discoapi]: https://github.com/foojay2020/discoapi
 [discoscripts]: https://github.com/foojay2020/discoscripts
