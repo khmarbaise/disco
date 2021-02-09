@@ -26,6 +26,8 @@ const (
 	optionBitness              = "bitness"
 	optionJavaFXBundled        = "javafx_bundled"
 	optionDirectlyDownloadable = "directly_downloadable"
+	optionFromVersion          = "from_version"
+	optionToVersion            = "to_version"
 )
 
 //Packages ....
@@ -37,13 +39,20 @@ var Packages = cli.Command{
 	Action:      packages,
 	Flags: []cli.Flag{
 		&cli.StringFlag{
-			Name:     optionVersion,
-			Aliases:  []string{"v"},
-			Usage:    "for example 1.8.0_265 or 11 or 13.0.5.1",
-			Required: true,
+			Name:    optionVersion,
+			Aliases: []string{"v"},
+			Usage:   "for example 1.8.0_265 or 11 or 13.0.5.1",
 		},
-		// "from_version" The packages where the version is larger than from_version (e.g. 11.0.1)
-		// "to_version" The packages where the version is smaller than to_version (e.g. 11.0.5)
+		&cli.StringFlag{
+			Name:    optionFromVersion,
+			Aliases: []string{"fv"},
+			Usage:   "for example 1.8.0_265 or 11 or 13.0.5.1",
+		},
+		&cli.StringFlag{
+			Name:    optionToVersion,
+			Aliases: []string{"tv"},
+			Usage:   "for example 1.8.0_265 or 11 or 13.0.5.1",
+		},
 		&cli.StringFlag{
 			Name:    optionVersionByDefinition,
 			Aliases: []string{"vbd"},
@@ -145,7 +154,12 @@ func packages(ctx *cli.Context) error {
 	if ctx.IsSet(optionVersion) {
 		query = append(query, fmt.Sprintf("version=%s", ctx.String(optionVersion)))
 	}
-
+	if ctx.IsSet(optionFromVersion) {
+		query = append(query, fmt.Sprintf("from_version=%s", ctx.String(optionFromVersion)))
+	}
+	if ctx.IsSet(optionToVersion) {
+		query = append(query, fmt.Sprintf("to_version=%s", ctx.String(optionToVersion)))
+	}
 	if ctx.IsSet(optionLibcType) {
 		query = append(query, fmt.Sprintf("libc_type=%s", ctx.String(optionLibcType)))
 	}
