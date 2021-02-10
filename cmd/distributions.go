@@ -64,7 +64,7 @@ func actionDistributions(ctx *cli.Context) error {
 	} else if ctx.IsSet(optionVersion) {
 		checkURL = fmt.Sprintf("%s/versions/%s", checkURL, ctx.String(optionVersion))
 		fmt.Printf("URL: %s\n", checkURL)
-		distributionsVersions(checkURL, ctx.Bool(optionVerbose))
+		distributions(checkURL, ctx.Bool(optionVerbose))
 	} else {
 		fmt.Printf("URL: %s\n", checkURL)
 		distributions(checkURL, ctx.Bool(optionVerbose))
@@ -115,34 +115,6 @@ func distributionsName(option options) error {
 			fmt.Println(distributionStructure.Versions[i])
 		}
 	}
-
-	return nil
-}
-
-func distributionsVersions(checkURL string, verbose bool) error {
-	var distributionsStructure distributionsStructure
-	helper.GetData(checkURL, &distributionsStructure)
-
-	table := tablewriter.NewWriter(os.Stdout)
-	if verbose {
-		table.SetHeader([]string{"Name", "API Parameter", "Versions"})
-	} else {
-		table.SetHeader([]string{"Name", "API Parameter", "Number of Versions"})
-	}
-
-	table.SetAutoWrapText(true)
-	table.SetRowLine(false)
-
-	for _, v := range distributionsStructure {
-		row := []string{}
-		if verbose {
-			row = []string{v.Name, v.APIParameter, strings.Join(v.Versions, ", ")}
-		} else {
-			row = []string{v.Name, v.APIParameter, fmt.Sprintf("%d", len(v.Versions))}
-		}
-		table.Append(row)
-	}
-	table.Render() // Send output
 
 	return nil
 }
