@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-// Version holds the current gjh version
+// Version holds the current disco version
 var Version = "development"
 
 // Tags holds the build tags used
