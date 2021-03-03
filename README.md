@@ -27,6 +27,7 @@ on the console.
 
 * The output of `packages` has to many columns to fit usefully on the console.
 * Precedence of different options for different commands.
+* Download a JDK/JRE package based on a particular selection.
 
 ## Examples
 
