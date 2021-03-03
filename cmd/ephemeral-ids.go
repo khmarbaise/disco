@@ -52,21 +52,18 @@ func ephemeralIds(ctx *cli.Context) error {
 	}
 
 	oneBar.Finish()
-	fmt.Println()
 
-	/*
-		req, _ := http.NewRequest("GET", "https://cdn.azul.com/zulu/bin/zulu11.39.15-ca-jdk11.0.7-linux_i686.tar.gz", nil)
-		resp, _ := http.DefaultClient.Do(req)
-		defer resp.Body.Close()
-
-		f, _ := os.OpenFile("zulu11.39.15-ca-jdk11.0.7-linux_i686.tar.gz", os.O_CREATE|os.O_WRONLY, 0644)
-		defer f.Close()
-
-		bar := progressbar.DefaultBytes(
-			resp.ContentLength,
-			"downloading zulu11.39.15-ca-jdk11.0.7-linux_i686.tar.gz...",
-		)
-		io.Copy(io.MultiWriter(f, bar), resp.Body)
-	*/
+	//req, _ := http.NewRequest("GET", "https://cdn.azul.com/zulu/bin/zulu11.39.15-ca-jdk11.0.7-linux_i686.tar.gz", nil)
+	//resp, _ := http.DefaultClient.Do(req)
+	//defer resp.Body.Close()
+	//
+	//f, _ := os.OpenFile("zulu11.39.15-ca-jdk11.0.7-linux_i686.tar.gz", os.O_CREATE|os.O_WRONLY, 0644)
+	//defer f.Close()
+	//
+	//bar := progressbar.DefaultBytes(
+	//	resp.ContentLength,
+	//	"downloading zulu11.39.15-ca-jdk11.0.7-linux_i686.tar.gz...",
+	//)
+	//io.Copy(io.MultiWriter(f, bar), resp.Body)
 	return nil
 }
