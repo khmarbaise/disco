@@ -160,6 +160,9 @@ func packages(ctx *cli.Context) error {
 	if ctx.IsSet(optionToVersion) {
 		query = append(query, fmt.Sprintf("to_version=%s", ctx.String(optionToVersion)))
 	}
+	if ctx.IsSet(optionVersionByDefinition) {
+		query = append(query, fmt.Sprintf("version_by_definition=%s", ctx.String(optionVersionByDefinition)))
+	}
 	if ctx.IsSet(optionLibcType) {
 		query = append(query, fmt.Sprintf("libc_type=%s", ctx.String(optionLibcType)))
 	}
@@ -194,7 +197,9 @@ func packages(ctx *cli.Context) error {
 		query = append(query, fmt.Sprintf("javafx_bundled=%s", helper.FromBoolToYesNo(ctx.IsSet(optionJavaFXBundled))))
 	}
 
-	url = fmt.Sprintf("%s?%s", url, strings.Join(query, "&"))
+	if len(query) > 0 {
+		url = fmt.Sprintf("%s?%s", url, strings.Join(query, "&"))
+	}
 	fmt.Printf("URL: %s\n", url)
 
 	var packagesStructure = PackagesStructure{}

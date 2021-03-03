@@ -34,8 +34,8 @@ type CommandOutput struct {
 
 //ExternalCommandWithRedirect Execute external command as subprocess and return stdout and stderr
 //plus possible error.
-func ExternalCommandWithRedirect(cmd ...string) (result CommandOutput, err error) {
-	c := exec.Command(cmd[0], cmd[1:]...)
+func ExternalCommandWithRedirect(name string, cmd ...string) (result CommandOutput, err error) {
+	c := exec.Command(name, cmd...)
 
 	var stdoutBuffer, stderrBuffer bytes.Buffer
 	c.Stdout = &stdoutBuffer
@@ -52,8 +52,8 @@ func ExternalCommandWithRedirect(cmd ...string) (result CommandOutput, err error
 }
 
 //ExternalCommandInteractive Execute external command as subprocess in interactive mode.
-func ExternalCommandInteractive(cmd ...string) (int, error) {
-	c := exec.Command(cmd[0], cmd[1:]...)
+func ExternalCommandInteractive(name string, cmd ...string) (int, error) {
+	c := exec.Command(name, cmd...)
 
 	c.Stdout = os.Stdin
 	c.Stderr = os.Stderr

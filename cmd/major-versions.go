@@ -72,7 +72,9 @@ func actionMajorVersions(ctx *cli.Context) error {
 	if ctx.IsSet(optionLatest) {
 		latest, err := fromShortToLatest(ctx.String(optionLatest))
 		check.IfError(err)
-		majorVersionQuery(fmt.Sprintf("%s/%s", url, latest))
+		url := fmt.Sprintf("%s/%s", url, latest)
+		fmt.Printf("URL: %s\n", url)
+		majorVersionQuery(url)
 	} else if ctx.IsSet(optionMajorVersion) {
 
 		if !(ctx.IsSet(optionEarlyAccess) != ctx.IsSet(optionGeneralAvailability)) {

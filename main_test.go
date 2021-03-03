@@ -5,45 +5,147 @@
 package main_test
 
 import (
-	"fmt"
 	"github.com/khmarbaise/disco/modules/execute"
+	"strings"
 	"testing"
 )
 
-//Test_Main_first Integration test to execute our own executable within a test.
-func Test_Main_first(t *testing.T) {
-	t.Run("Execute disco with --help", func(t *testing.T) {
-		redirect, err := execute.ExternalCommandWithRedirect("./disco", "--help")
-		if err != nil {
-			t.Errorf("errorous execution %v", err)
-		}
-		stdout := redirect.Stdout
-		stderr := redirect.Stderr
-		if len(stderr) != 0 {
-			t.Errorf("error reported %v\n%v", stderr, stdout)
-		}
-	})
-}
+func Test_Main_DifferentCommands(t *testing.T) {
+	tests := []struct {
+		args        []string
+		want_stderr string
+		want_stdout string
+	}{
+		{
+			args:        []string{"dist", "--help"},
+			want_stderr: "",
+			want_stdout: "", //can not give sequence which must be equal. Need to reconsider.
+		},
+		{
+			args:        []string{"dist", "--name", "oraclxe"},
+			want_stderr: "Status Code: 500 Internal Server Error",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"dist", "--name", "oracle"},
+			want_stderr: "",
+			want_stdout: "URL: https://api.foojay.io/disco/v1.0/distributions/oracle\nName: Oracle\nAPI Parameter: oracle\nNumber of versions: 79\n",
+		},
+		{
+			args:        []string{"dist", "--name", "aoj"},
+			want_stderr: "",
+			want_stdout: "URL: https://api.foojay.io/disco/v1.0/distributions/aoj\nName: AOJ\nAPI Parameter: aoj\nNumber of versions: 51\n",
+		},
+		{
+			args:        []string{"dist", "--name", "corretto"},
+			want_stderr: "",
+			want_stdout: "URL: https://api.foojay.io/disco/v1.0/distributions/corretto\nName: Corretto\nAPI Parameter: corretto\nNumber of versions: 30\n",
+		},
+		{
+			args:        []string{"majorversions"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"majorversions", "--major-version", "11"},
+			want_stderr: "Error: either --ea or --ga must be given",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"majorversions", "-v", "11", "--ea"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"majorversions", "--major-version", "11", "--ea"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"majorversions", "--major-version", "11", "--ga"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"majorversions", "--major-version", "11", "--latest", "ga"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"majorversions", "-v", "11", "-l", "ea"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"majorversions", "-v", "11", "-l", "ga"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"majorversions", "-v", "11", "-l", "sts"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"majorversions", "-v", "11", "-l", "mts"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"majorversions", "-v", "11", "-l", "lts"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--architecture", "mips"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--distro", "redhat"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--archive_type", "pkg"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--package_type", "jre"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--operating_system", "macos"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--libc_type", "musl"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+	}
+	for _, tt := range tests {
+		description := strings.Join(tt.args, " ")
+		t.Run(description, func(t *testing.T) {
+			redirect, err := execute.ExternalCommandWithRedirect("./disco", tt.args...)
+			if err != nil {
+				stderr := strings.TrimSpace(redirect.Stderr) //remove leading line feed.
+				if tt.want_stderr != stderr {
+					t.Errorf("\n\nerrorous execution\n%v\n stdout: ---------------------\n%v\nstderr:--------------------\n%v", err, redirect.Stdout, redirect.Stderr)
+				}
+			}
+			if len(tt.want_stdout) > 0 && strings.TrimSpace(redirect.Stdout) != strings.TrimSpace(tt.want_stdout) {
+				t.Errorf("\n stdout: ---------------------\n%v\nstderr:--------------------\n%v", redirect.Stdout, redirect.Stderr)
+			}
+		})
+	}
 
-//Second...
-func Test_Main_Second(t *testing.T) {
-	t.Run("Execute disco xxx", func(t *testing.T) {
-		execute.ExternalCommand("./disco", "dist", "--help")
-	})
-}
-
-//Second...
-func Test_Main_Distribution(t *testing.T) {
-	t.Run("Execute disco distribution --name oracle", func(t *testing.T) {
-		redirect, err := execute.ExternalCommandWithRedirect("./disco", "dist", "--name", "oraclxe")
-		if err != nil {
-			t.Errorf("errorous execution %v\n stdout:%v\nstderr:%v", err, redirect.Stdout, redirect.Stderr)
-		}
-		stdout := redirect.Stdout
-		fmt.Println(stdout)
-		stderr := redirect.Stderr
-		if len(stderr) != 0 {
-			t.Errorf("error reported %v\n%v", stderr, stdout)
-		}
-	})
 }

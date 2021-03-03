@@ -57,10 +57,11 @@ type options struct {
 func actionDistributions(ctx *cli.Context) error {
 	var checkURL = fmt.Sprintf("%s/distributions", foojayBaseAPI)
 
+	//FIXME: version+name is not allowed.
 	if ctx.IsSet(optionName) {
-		checkURL = fmt.Sprintf("%s/%s", checkURL, ctx.String("name"))
+		checkURL = fmt.Sprintf("%s/%s", checkURL, ctx.String(optionName))
 		fmt.Printf("URL: %s\n", checkURL)
-		distributionsName(options{checkURL, ctx.Bool("verbose")})
+		distributionsName(options{checkURL, ctx.Bool(optionVerbose)})
 	} else if ctx.IsSet(optionVersion) {
 		checkURL = fmt.Sprintf("%s/versions/%s", checkURL, ctx.String(optionVersion))
 		fmt.Printf("URL: %s\n", checkURL)

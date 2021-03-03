@@ -17,13 +17,13 @@ import (
 func GetData(checkURL string, v interface{}) {
 	response, err := http.Get(checkURL)
 	if err != nil {
-		fmt.Print(err.Error())
+		fmt.Fprintf(os.Stderr, err.Error())
 		os.Exit(1)
 	}
 
 	//Need to think about this.
 	if response.StatusCode != http.StatusOK {
-		fmt.Printf("%s\n", response.Status)
+		fmt.Fprintf(os.Stderr, "Status Code: %s\n", response.Status)
 		os.Exit(2)
 	}
 
