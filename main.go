@@ -8,23 +8,18 @@ package main
 import (
 	"fmt"
 	"github.com/khmarbaise/disco/cmd"
+	"github.com/khmarbaise/disco/modules/helper"
 	"github.com/urfave/cli/v2"
 	"os"
 	"strings"
 )
-
-// Version holds the current disco version
-var Version = "development"
-
-// Tags holds the build tags used
-var Tags = ""
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "disco"
 	app.Usage = "Command line tool to explore the Foojay Discovery API"
 	app.Description = "disco. ..."
-	app.Version = Version + formatBuiltWith(Tags)
+	app.Version = helper.Version + formatBuiltWith(helper.Tags)
 	app.EnableBashCompletion = true
 	app.Commands = []*cli.Command{
 		&cmd.Distributions,

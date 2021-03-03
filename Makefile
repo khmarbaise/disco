@@ -39,7 +39,7 @@ else
 	APP_VERSION ?= $(shell git describe --tags --always | sed 's/-/+/' | sed 's/^v//')
 endif
 
-LDFLAGS := -X "main.Version=$(APP_VERSION)" -X "main.Tags=$(TAGS)"
+LDFLAGS := -X "github.com/khmarbaise/disco/modules/helper.Version=$(APP_VERSION)" -X "github.com/khmarbaise/disco/modules/modules/helper/version.Tags=$(TAGS)"
 
 GO_DIRS := cmd modules vendor
 GO_SOURCES := $(wildcard *.go)

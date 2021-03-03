@@ -15,7 +15,7 @@ import (
 
 //GetData Will get on the given URL and convert the JSON into the given datastructure.
 func GetData(checkURL string, v interface{}) {
-	response, err := http.Get(checkURL)
+	response, err := privateGet(checkURL)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
 		os.Exit(1)
@@ -32,6 +32,7 @@ func GetData(checkURL string, v interface{}) {
 		log.Fatal(err)
 	}
 
+	defer response.Body.Close();
 	json.Unmarshal(responseData, &v)
 }
 
@@ -41,4 +42,22 @@ func FromBoolToYesNo(value bool) string {
 		return "Yes"
 	}
 	return "No"
+}
+
+//privateGet This method will add a http-header which contains the user-agent.
+func privateGet(checkURL string) (result *http.Response, err error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", checkURL, nil)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, err.Error())
+		os.Exit(1)
+	}
+
+	req.Header.Set("user-agent", "disco go command line utility version: " + Version)
+	response, err := client.Do(req)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, err.Error())
+		os.Exit(1)
+	}
+	return response, err
 }
