@@ -29,17 +29,17 @@ func Test_Main_DifferentCommands(t *testing.T) {
 		{
 			args:        []string{"dist", "--name", "oracle"},
 			want_stderr: "",
-			want_stdout: "URL: https://api.foojay.io/disco/v1.0/distributions/oracle\nName: Oracle\nAPI Parameter: oracle\nNumber of versions: 79\n",
+			want_stdout: "",
 		},
 		{
 			args:        []string{"dist", "--name", "aoj"},
 			want_stderr: "",
-			want_stdout: "URL: https://api.foojay.io/disco/v1.0/distributions/aoj\nName: AOJ\nAPI Parameter: aoj\nNumber of versions: 51\n",
+			want_stdout: "",
 		},
 		{
 			args:        []string{"dist", "--name", "corretto"},
 			want_stderr: "",
-			want_stdout: "URL: https://api.foojay.io/disco/v1.0/distributions/corretto\nName: Corretto\nAPI Parameter: corretto\nNumber of versions: 30\n",
+			want_stdout: "",
 		},
 		{
 			args:        []string{"majorversions"},
