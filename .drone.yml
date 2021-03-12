@@ -10,7 +10,7 @@ platform:
 steps:
 - name: build
   pull: always
-  image: golang:1.15
+  image: golang:1.16
   commands:
   - make clean
   - make lint
@@ -25,7 +25,7 @@ steps:
     - pull_request
 
 - name: unit-test
-  image: golang:1.15
+  image: golang:1.16
   commands:
   - make unit-test-coverage
   settings:
@@ -36,7 +36,7 @@ steps:
     - pull_request
 
 - name: release-test
-  image: golang:1.15
+  image: golang:1.16
   commands:
   - make test
   settings:
@@ -50,7 +50,7 @@ steps:
 
 - name: tag-test
   pull: always
-  image: golang:1.15
+  image: golang:1.16
   commands:
   - make test
   settings:
@@ -60,7 +60,7 @@ steps:
     - tag
 
 - name: static
-  image: golang:1.15
+  image: golang:1.16
   commands:
   - make release
   when:
