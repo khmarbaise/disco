@@ -53,7 +53,7 @@ func privateGet(checkURL string) (result *http.Response, err error) {
 		os.Exit(1)
 	}
 
-	req.Header.Set("user-agent", fmt.Sprintf("disco go command line utility version: %s"))
+	req.Header.Set("user-agent", fmt.Sprintf("disco go command line utility version: %s", Version))
 	response, err := client.Do(req)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
