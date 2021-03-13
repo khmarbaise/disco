@@ -127,7 +127,17 @@ func Test_Main_DifferentCommands(t *testing.T) {
 			want_stdout: "",
 		},
 		{
+			args:        []string{"packages", "-v", "11", "--os", "macos"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
 			args:        []string{"packages", "-v", "11", "--libc_type", "musl"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--lt", "musl"},
 			want_stderr: "",
 			want_stdout: "",
 		},
