@@ -131,6 +131,61 @@ func Test_Main_DifferentCommands(t *testing.T) {
 			want_stderr: "",
 			want_stdout: "",
 		},
+		{
+			args:        []string{"packages", "-v", "11", "--release_status", "ga"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--rs", "ga"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--term_of_support", "lts"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--tos", "lts"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--bitness", "32"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "-b", "32"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--javafx_bundled"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--fx"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--directly_downloadable"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--dd"},
+			want_stderr: "",
+			want_stdout: "",
+		},
+		{
+			args:        []string{"packages", "-v", "11", "--latest", "overall"},
+			want_stderr: "",
+			want_stdout: "",
+		},
 	}
 	for _, tt := range tests {
 		description := strings.Join(tt.args, " ")
