@@ -98,7 +98,7 @@ func distributions(checkURL string, verbose bool) error {
 		}
 		table.Append(row)
 	}
-	table.Render() // Send output
+	table.Render()
 
 	return nil
 }
