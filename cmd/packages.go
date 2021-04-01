@@ -13,23 +13,6 @@ import (
 	"strings"
 )
 
-const (
-	optionVersionByDefinition  = "version_by_definition"
-	optionArchitecture         = "architecture"
-	optionDistribution         = "distribution"
-	optionArchiveType          = "archive_type"
-	optionPackageType          = "package_type"
-	optionOperatingSystem      = "operating_system"
-	optionLibcType             = "libc_type"
-	optionReleaseStatus        = "release_status"
-	optionTermOfSupport        = "term_of_support"
-	optionBitness              = "bitness"
-	optionJavaFXBundled        = "javafx_bundled"
-	optionDirectlyDownloadable = "directly_downloadable"
-	optionFromVersion          = "from_version"
-	optionToVersion            = "to_version"
-)
-
 //Packages ....
 var Packages = cli.Command{
 	Name:        "packages",
