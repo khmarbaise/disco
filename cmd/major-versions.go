@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-//MajorVersions Describe
+//MajorVersions will access the REST API /majorversion including it's possible options.
 var MajorVersions = cli.Command{
 	Name:        "majorversions",
 	Aliases:     []string{"mv"},
