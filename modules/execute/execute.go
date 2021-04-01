@@ -6,24 +6,8 @@ package execute
 
 import (
 	"bytes"
-	"log"
-	"os"
 	"os/exec"
 )
-
-//ExternalCommand Execute external command as subprocess.
-func ExternalCommand(cmd ...string) {
-	log.Printf("Executing : %s ...\n", cmd)
-	c := exec.Command(cmd[0], cmd[1:]...)
-	c.Stdout = os.Stdout
-	c.Stderr = os.Stderr
-	if err := c.Start(); err != nil {
-		log.Panicln(err)
-	}
-	if err := c.Wait(); err != nil {
-		log.Panicln(err)
-	}
-}
 
 //CommandOutput represents the output of a command execution (stdout, stderr).
 type CommandOutput struct {
@@ -49,20 +33,4 @@ func ExternalCommandWithRedirect(name string, cmd ...string) (result CommandOutp
 		return result, err
 	}
 	return CommandOutput{Stdout: stdoutBuffer.String(), Stderr: stderrBuffer.String(), ExitCode: c.ProcessState.ExitCode()}, nil
-}
-
-//ExternalCommandInteractive Execute external command as subprocess in interactive mode.
-func ExternalCommandInteractive(name string, cmd ...string) (int, error) {
-	c := exec.Command(name, cmd...)
-
-	c.Stdout = os.Stdin
-	c.Stderr = os.Stderr
-	c.Stdin = os.Stdin
-	if err := c.Start(); err != nil {
-		return c.ProcessState.ExitCode(), err
-	}
-	if err := c.Wait(); err != nil {
-		return c.ProcessState.ExitCode(), err
-	}
-	return c.ProcessState.ExitCode(), nil
 }
