@@ -18,7 +18,7 @@ import (
 var MajorVersions = cli.Command{
 	Name:        "majorversions",
 	Aliases:     []string{"mv"},
-	Usage:       "",
+	Usage:       "Will use the '../majorversions' end point of the Foojay Discovery API",
 	Description: "Majorversions will access the endpoint ../majorversions of the disco API.",
 	Action:      actionMajorVersions,
 	Flags: []cli.Flag{

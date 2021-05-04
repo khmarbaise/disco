@@ -17,7 +17,7 @@ import (
 var Packages = cli.Command{
 	Name:        "packages",
 	Aliases:     []string{"pkg"},
-	Usage:       "packages on issue",
+	Usage:       "Will use the '../packages' end point of the Foojay Discovery API",
 	Description: "packages ...",
 	Action:      packages,
 	Flags: []cli.Flag{
