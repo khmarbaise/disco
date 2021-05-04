@@ -28,7 +28,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "disco"
 	app.Usage = "Command line tool to explore the Foojay Discovery API"
-	app.Description = "disco. ..."
+	app.Description = "A command line based Foojay Discovery API (disco) tool to explore the information of the API"
 	app.Version = helper.Version + formatBuiltWith(helper.Tags)
 	app.EnableBashCompletion = true
 	app.Commands = []*cli.Command{
