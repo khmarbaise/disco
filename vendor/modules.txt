@@ -8,7 +8,7 @@ github.com/cpuguy83/go-md2man/v2/md2man
 github.com/mattn/go-runewidth
 # github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db
 github.com/mitchellh/colorstring
-# github.com/olekukonko/tablewriter v0.0.4
+# github.com/olekukonko/tablewriter v0.0.5
 ## explicit
 github.com/olekukonko/tablewriter
 # github.com/russross/blackfriday/v2 v2.0.1
