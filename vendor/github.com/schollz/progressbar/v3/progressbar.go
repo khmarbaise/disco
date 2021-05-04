@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"math"
 	"os"
 	"regexp"
@@ -49,6 +50,8 @@ type state struct {
 	maxLineWidth int
 	currentBytes float64
 	finished     bool
+
+	rendered string
 }
 
 type config struct {
@@ -330,6 +333,30 @@ func DefaultBytes(maxBytes int64, description ...string) *ProgressBar {
 	return bar
 }
 
+// DefaultBytesSilent is the same as DefaultBytes, but does not output anywhere.
+// String() can be used to get the output instead.
+func DefaultBytesSilent(maxBytes int64, description ...string) *ProgressBar {
+	// Mostly the same bar as DefaultBytes
+
+	desc := ""
+	if len(description) > 0 {
+		desc = description[0]
+	}
+	bar := NewOptions64(
+		maxBytes,
+		OptionSetDescription(desc),
+		OptionSetWriter(ioutil.Discard),
+		OptionShowBytes(true),
+		OptionSetWidth(10),
+		OptionThrottle(65*time.Millisecond),
+		OptionShowCount(),
+		OptionSpinnerType(14),
+		OptionFullWidth(),
+	)
+	bar.RenderBlank()
+	return bar
+}
+
 // Default provides a progressbar with recommended defaults.
 // Set max to -1 to use as a spinner.
 func Default(max int64, description ...string) *ProgressBar {
@@ -353,6 +380,36 @@ func Default(max int64, description ...string) *ProgressBar {
 	)
 	bar.RenderBlank()
 	return bar
+}
+
+// DefaultSilent is the same as Default, but does not output anywhere.
+// String() can be used to get the output instead.
+func DefaultSilent(max int64, description ...string) *ProgressBar {
+	// Mostly the same bar as Default
+
+	desc := ""
+	if len(description) > 0 {
+		desc = description[0]
+	}
+	bar := NewOptions64(
+		max,
+		OptionSetDescription(desc),
+		OptionSetWriter(ioutil.Discard),
+		OptionSetWidth(10),
+		OptionThrottle(65*time.Millisecond),
+		OptionShowCount(),
+		OptionShowIts(),
+		OptionSpinnerType(14),
+		OptionFullWidth(),
+	)
+	bar.RenderBlank()
+	return bar
+}
+
+// String returns the current rendered version of the progress bar.
+// It will never return an empty string while the progress bar is running.
+func (p *ProgressBar) String() string {
+	return p.state.rendered
 }
 
 // RenderBlank renders the current bar state, you can use this to render a 0% state
@@ -393,7 +450,7 @@ func (p *ProgressBar) Set(num int) error {
 // Set64 wil set the bar to a current number
 func (p *ProgressBar) Set64(num int64) error {
 	p.lock.Lock()
-	toAdd := int64(num) - p.state.currentNum
+	toAdd := num - int64(p.state.currentBytes)
 	p.lock.Unlock()
 	return p.Add64(toAdd)
 }
@@ -520,7 +577,7 @@ func (p *ProgressBar) render() error {
 	if !p.state.finished && p.state.currentNum >= p.config.max {
 		p.state.finished = true
 		if !p.config.clearOnFinish {
-			renderProgressBar(p.config, p.state)
+			renderProgressBar(p.config, &p.state)
 		}
 
 		if p.config.onCompletion != nil {
@@ -539,7 +596,7 @@ func (p *ProgressBar) render() error {
 	}
 
 	// then, re-render the current progress bar
-	w, err := renderProgressBar(p.config, p.state)
+	w, err := renderProgressBar(p.config, &p.state)
 	if err != nil {
 		return err
 	}
@@ -571,7 +628,30 @@ func (p *ProgressBar) State() State {
 // regex matching ansi escape codes
 var ansiRegex = regexp.MustCompile(`\x1b\[[0-9;]*[a-zA-Z]`)
 
-func renderProgressBar(c config, s state) (int, error) {
+func getStringWidth(c config, str string, colorize bool) int {
+	if c.colorCodes {
+		// convert any color codes in the progress bar into the respective ANSI codes
+		str = colorstring.Color(str)
+	}
+
+	// the width of the string, if printed to the console
+	// does not include the carriage return character
+	cleanString := strings.Replace(str, "\r", "", -1)
+
+	if c.colorCodes {
+		// the ANSI codes for the colors do not take up space in the console output,
+		// so they do not count towards the output string width
+		cleanString = ansiRegex.ReplaceAllString(cleanString, "")
+	}
+
+	// get the amount of runes in the string instead of the
+	// character count of the string, as some runes span multiple characters.
+	// see https://stackoverflow.com/a/12668840/2733724
+	stringWidth := runewidth.StringWidth(cleanString)
+	return stringWidth
+}
+
+func renderProgressBar(c config, s *state) (int, error) {
 	leftBrac := ""
 	rightBrac := ""
 	saucer := ""
@@ -661,7 +741,7 @@ func renderProgressBar(c config, s state) (int, error) {
 			}
 		}
 
-		c.width = width - len(c.description) - 14 - len(bytesString) - len(leftBrac) - len(rightBrac)
+		c.width = width - getStringWidth(c, c.description, true) - 14 - len(bytesString) - len(leftBrac) - len(rightBrac)
 		s.currentSaucerSize = int(float64(s.currentPercent) / 100.0 * float64(c.width))
 	}
 	if s.currentSaucerSize > 0 {
@@ -689,7 +769,7 @@ func renderProgressBar(c config, s state) (int, error) {
 	}
 	if c.ignoreLength {
 		str = fmt.Sprintf("\r%s %s %s ",
-			spinners[c.spinnerType][int(math.Round(math.Mod(float64(time.Since(s.counterTime).Milliseconds()/100), float64(len(spinners[c.spinnerType])))))],
+			spinners[c.spinnerType][int(math.Round(math.Mod(float64(time.Since(s.startTime).Milliseconds()/100), float64(len(spinners[c.spinnerType])))))],
 			c.description,
 			bytesString,
 		)
@@ -734,25 +814,9 @@ func renderProgressBar(c config, s state) (int, error) {
 		str = colorstring.Color(str)
 	}
 
-	// the width of the string, if printed to the console
-	// does not include the carriage return character
-	cleanString := strings.Replace(str, "\r", "", -1)
+	s.rendered = str
 
-	if c.colorCodes {
-		// the ANSI codes for the colors do not take up space in the console output,
-		// so they do not count towards the output string width
-		cleanString = ansiRegex.ReplaceAllString(cleanString, "")
-	}
-
-	// get the amount of runes in the string instead of the
-	// character count of the string, as some runes span multiple characters.
-	// see https://stackoverflow.com/a/12668840/2733724
-	stringWidth := runewidth.StringWidth(cleanString)
-	if c.useANSICodes {
-		// append the "clear rest of line" ANSI escape sequence
-		str = str + "\033[0K"
-	}
-	return stringWidth, writeString(c, str)
+	return getStringWidth(c, str, false), writeString(c, str)
 }
 
 func clearProgressBar(c config, s state) error {
@@ -760,11 +824,13 @@ func clearProgressBar(c config, s state) error {
 		// write the "clear current line" ANSI escape sequence
 		return writeString(c, "\033[2K\r")
 	}
-	// fill the current line with enough spaces
+	// fill the empty content
 	// to overwrite the progress bar and jump
 	// back to the beginning of the line
 	str := fmt.Sprintf("\r%s\r", strings.Repeat(" ", s.maxLineWidth))
 	return writeString(c, str)
+	// the following does not show correctly if the previous line is longer than subsequent line
+	// return writeString(c, "\r")
 }
 
 func writeString(c config, str string) error {
@@ -823,6 +889,11 @@ func (p *ProgressBar) Write(b []byte) (n int, err error) {
 func (p *ProgressBar) Read(b []byte) (n int, err error) {
 	n = len(b)
 	p.Add(n)
+	return
+}
+
+func (p *ProgressBar) Close() (err error) {
+	p.Finish()
 	return
 }
 
