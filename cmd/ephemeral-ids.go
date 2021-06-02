@@ -63,6 +63,7 @@ func ephemeralIds(ctx *cli.Context) error {
 
 	oneBar.Finish()
 
+	fmt.Println()
 	//req, _ := http.NewRequest("GET", "https://cdn.azul.com/zulu/bin/zulu11.39.15-ca-jdk11.0.7-linux_i686.tar.gz", nil)
 	//resp, _ := http.DefaultClient.Do(req)
 	//defer resp.Body.Close()
