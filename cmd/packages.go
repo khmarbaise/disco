@@ -119,6 +119,7 @@ var Packages = cli.Command{
 	},
 }
 
+//PackagesStructureResult defines structure for JSON package endpoint.
 type PackagesStructureResult struct {
 	Result []struct {
 		Id                   string `json:"id"`
