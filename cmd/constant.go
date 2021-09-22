@@ -15,8 +15,8 @@
 package cmd
 
 const (
-	//foojayBaseAPI Base REST API URI for Foojay V1.0
-	foojayBaseAPI = "https://api.foojay.io/disco/v1.0"
+	//foojayBaseAPI Base REST API URI for Foojay V2.0
+	foojayBaseAPI = "https://api.foojay.io/disco/v2.0"
 
 	//Command line options used in the different commands.
 

@@ -119,25 +119,33 @@ var Packages = cli.Command{
 	},
 }
 
-//PackagesStructure Defines structure for REST API /packages.
-type PackagesStructure []struct {
-	ID                   string `json:"id"`
-	ArchiveType          string `json:"archive_type"`
-	Distribution         string `json:"distribution"`
-	MajorVersion         int    `json:"major_version"`
-	JavaVersion          string `json:"java_version"`
-	DistributionVersion  string `json:"distribution_version"`
-	LatestBuildAvailable bool   `json:"latest_build_available"`
-	ReleaseStatus        string `json:"release_status"`
-	TermOfSupport        string `json:"term_of_support"`
-	OperatingSystem      string `json:"operating_system"`
-	LibCType             string `json:"lib_c_type"`
-	Architecture         string `json:"architecture"`
-	PackageType          string `json:"package_type"`
-	JavafxBundled        bool   `json:"javafx_bundled"`
-	DirectlyDownloadable bool   `json:"directly_downloadable"`
-	Filename             string `json:"filename"`
-	EphemeralID          string `json:"ephemeral_id"`
+type PackagesStructureResult struct {
+	Result []struct {
+		Id                   string `json:"id"`
+		ArchiveType          string `json:"archive_type"`
+		Distribution         string `json:"distribution"`
+		MajorVersion         int    `json:"major_version"`
+		JavaVersion          string `json:"java_version"`
+		DistributionVersion  string `json:"distribution_version"`
+		LatestBuildAvailable bool   `json:"latest_build_available"`
+		ReleaseStatus        string `json:"release_status"`
+		TermOfSupport        string `json:"term_of_support"`
+		OperatingSystem      string `json:"operating_system"`
+		LibCType             string `json:"lib_c_type"`
+		Architecture         string `json:"architecture"`
+		PackageType          string `json:"package_type"`
+		JavafxBundled        bool   `json:"javafx_bundled"`
+		DirectlyDownloadable bool   `json:"directly_downloadable"`
+		Filename             string `json:"filename"`
+		EphemeralId          string `json:"ephemeral_id"`
+		Links                struct {
+			PkgInfoUri          string `json:"pkg_info_uri"`
+			PkgDownloadRedirect string `json:"pkg_download_redirect"`
+		} `json:"links"`
+		FreeUseInProduction bool          `json:"free_use_in_production"`
+		Feature             []interface{} `json:"feature"`
+	} `json:"result"`
+	Message string `json:"message"`
 }
 
 func packages(ctx *cli.Context) error {
@@ -195,8 +203,8 @@ func packages(ctx *cli.Context) error {
 	}
 	fmt.Printf("URL: %s\n", url)
 
-	var packagesStructure = PackagesStructure{}
-	helper.GetData(url, &packagesStructure)
+	var packagesStructureResult = PackagesStructureResult{}
+	helper.GetData(url, &packagesStructureResult)
 
 	table := tablewriter.NewWriter(os.Stdout)
 
@@ -222,7 +230,8 @@ func packages(ctx *cli.Context) error {
 	table.SetAutoWrapText(true)
 	table.SetRowLine(true)
 
-	for _, v := range packagesStructure {
+	result := packagesStructureResult.Result
+	for _, v := range result {
 		row := []string{
 			//fmt.Sprintf("%s", v.ID),
 			v.ArchiveType,
