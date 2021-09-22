@@ -122,7 +122,7 @@ var Packages = cli.Command{
 //PackagesStructureResult defines structure for JSON package endpoint.
 type PackagesStructureResult struct {
 	Result []struct {
-		Id                   string `json:"id"`
+		ID                   string `json:"id"`
 		ArchiveType          string `json:"archive_type"`
 		Distribution         string `json:"distribution"`
 		MajorVersion         int    `json:"major_version"`
@@ -138,9 +138,9 @@ type PackagesStructureResult struct {
 		JavafxBundled        bool   `json:"javafx_bundled"`
 		DirectlyDownloadable bool   `json:"directly_downloadable"`
 		Filename             string `json:"filename"`
-		EphemeralId          string `json:"ephemeral_id"`
+		EphemeralID          string `json:"ephemeral_id"`
 		Links                struct {
-			PkgInfoUri          string `json:"pkg_info_uri"`
+			PkgInfoURI          string `json:"pkg_info_uri"`
 			PkgDownloadRedirect string `json:"pkg_download_redirect"`
 		} `json:"links"`
 		FreeUseInProduction bool          `json:"free_use_in_production"`
