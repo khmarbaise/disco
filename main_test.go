@@ -33,7 +33,7 @@ func Test_Main_DifferentCommands(t *testing.T) {
 		},
 		{
 			args:        []string{"dist", "--name", "oraclxe"},
-			want_stderr: "Status Code: 500 Internal Server Error",
+			want_stderr: "Status Code: 400 Bad Request",
 			want_stdout: "",
 		},
 		{
