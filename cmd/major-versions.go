@@ -61,11 +61,15 @@ var MajorVersions = cli.Command{
 }
 
 //majorVersionsStruct defines the json structure which is replied for /major_versions from REST.
-type majorVersionsStruct []struct {
-	MajorVersion  int      `json:"major_version"`
-	TermOfSupport string   `json:"term_of_support"`
-	Maintained    bool     `json:"maintained"`
-	Versions      []string `json:"versions"`
+type majorVersionsStruct struct {
+	Result []struct {
+		MajorVersion    int      `json:"major_version"`
+		TermOfSupport   string   `json:"term_of_support"`
+		Maintained      bool     `json:"maintained"`
+		EarlyAccessOnly bool     `json:"early_access_only"`
+		Versions        []string `json:"versions"`
+	} `json:"result"`
+	Message string `json:"message"`
 }
 
 //majorVersionsLatestStruct defines the json structure which will be replied by /major_versions/latest_..
@@ -134,7 +138,7 @@ func majorVersion(url string) {
 	table.SetAutoWrapText(true)
 	table.SetRowLine(true)
 
-	for _, v := range majorVersionsStruct {
+	for _, v := range majorVersionsStruct.Result {
 		row := []string{fmt.Sprintf("%d", v.MajorVersion), helper.FromBoolToYesNo(v.Maintained), v.TermOfSupport, strings.Join(v.Versions, ", ")}
 		table.Append(row)
 	}
@@ -150,7 +154,7 @@ func majorVersionMaintainedEaGa(url string) {
 	table.SetAutoWrapText(true)
 	table.SetRowLine(true)
 
-	for _, v := range majorVersionsStruct {
+	for _, v := range majorVersionsStruct.Result {
 		row := []string{fmt.Sprintf("%d", v.MajorVersion), helper.FromBoolToYesNo(v.Maintained), v.TermOfSupport, strings.Join(v.Versions, ", ")}
 		table.Append(row)
 	}
