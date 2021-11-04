@@ -4,3 +4,5 @@ disco
 .history/
 dist/
 coverage.out
+
+dist/
