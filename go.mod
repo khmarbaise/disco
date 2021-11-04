@@ -1,6 +1,6 @@
 module github.com/khmarbaise/disco
 
-go 1.16.10
+go 1.16
 
 require (
 	code.gitea.io/gitea-vet v0.2.1
